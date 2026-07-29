@@ -8,8 +8,10 @@ WORKDIR /workspace
 FROM base AS dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/web/package.json apps/web/package.json
+COPY packages/analysis/package.json packages/analysis/package.json
 COPY packages/db/package.json packages/db/package.json
 COPY packages/kernel/package.json packages/kernel/package.json
+COPY packages/storage/package.json packages/storage/package.json
 COPY packages/ui/package.json packages/ui/package.json
 RUN pnpm install --frozen-lockfile
 
@@ -19,8 +21,10 @@ ENV BETTER_AUTH_SECRET="build-only-placeholder-not-used-at-runtime-000000"
 ENV APP_URL="http://localhost:3000"
 ENV DATABASE_URL="postgresql://build:build@127.0.0.1:5432/build"
 COPY . .
-RUN pnpm --filter @rebuild/kernel build \
+RUN pnpm --filter @rebuild/analysis build \
+  && pnpm --filter @rebuild/kernel build \
   && pnpm --filter @rebuild/db build \
+  && pnpm --filter @rebuild/storage build \
   && pnpm --filter @rebuild/ui build \
   && pnpm --filter @rebuild/web build
 

@@ -36,12 +36,18 @@ importers:
 
   apps/web:
     dependencies:
+      '@rebuild/analysis':
+        specifier: workspace:*
+        version: link:../../packages/analysis
       '@rebuild/db':
         specifier: workspace:*
         version: link:../../packages/db
       '@rebuild/kernel':
         specifier: workspace:*
         version: link:../../packages/kernel
+      '@rebuild/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
       '@rebuild/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -97,9 +103,21 @@ importers:
 
   apps/worker:
     dependencies:
+      '@rebuild/analysis':
+        specifier: workspace:*
+        version: link:../../packages/analysis
+      '@rebuild/db':
+        specifier: workspace:*
+        version: link:../../packages/db
       '@rebuild/kernel':
         specifier: workspace:*
         version: link:../../packages/kernel
+      '@rebuild/storage':
+        specifier: workspace:*
+        version: link:../../packages/storage
+      sharp:
+        specifier: 0.35.3
+        version: 0.35.3(@types/node@24.10.1)
       zod:
         specifier: 4.4.3
         version: 4.4.3
@@ -113,6 +131,22 @@ importers:
       tsx:
         specifier: 4.23.1
         version: 4.23.1
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: 4.1.10
+        version: 4.1.10(@types/node@24.10.1)(vite@8.1.5(@types/node@24.10.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.1))
+
+  packages/analysis:
+    dependencies:
+      zod:
+        specifier: 4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -146,6 +180,18 @@ importers:
         version: 4.1.10(@types/node@24.10.1)(vite@8.1.5(@types/node@24.10.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.1))
 
   packages/kernel:
+    devDependencies:
+      '@types/node':
+        specifier: 24.10.1
+        version: 24.10.1
+      typescript:
+        specifier: 6.0.3
+        version: 6.0.3
+      vitest:
+        specifier: 4.1.10
+        version: 4.1.10(@types/node@24.10.1)(vite@8.1.5(@types/node@24.10.1)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.23.1))
+
+  packages/storage:
     devDependencies:
       '@types/node':
         specifier: 24.10.1

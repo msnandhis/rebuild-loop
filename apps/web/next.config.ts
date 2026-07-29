@@ -11,7 +11,13 @@ const projectRoot = path.join(
 const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: projectRoot,
-  transpilePackages: ["@rebuild/db", "@rebuild/kernel", "@rebuild/ui"],
+  transpilePackages: [
+    "@rebuild/analysis",
+    "@rebuild/db",
+    "@rebuild/kernel",
+    "@rebuild/storage",
+    "@rebuild/ui",
+  ],
 };
 
 export default nextConfig;

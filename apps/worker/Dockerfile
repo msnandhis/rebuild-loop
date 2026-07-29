@@ -8,12 +8,18 @@ WORKDIR /workspace
 FROM base AS dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/worker/package.json apps/worker/package.json
+COPY packages/analysis/package.json packages/analysis/package.json
+COPY packages/db/package.json packages/db/package.json
 COPY packages/kernel/package.json packages/kernel/package.json
+COPY packages/storage/package.json packages/storage/package.json
 RUN pnpm install --frozen-lockfile
 
 FROM dependencies AS builder
 COPY . .
-RUN pnpm --filter @rebuild/worker build
+RUN pnpm --filter @rebuild/analysis build \
+  && pnpm --filter @rebuild/db build \
+  && pnpm --filter @rebuild/storage build \
+  && pnpm --filter @rebuild/worker build
 
 FROM node:24.18.0-alpine AS runner
 ENV NODE_ENV=production

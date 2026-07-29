@@ -26,6 +26,7 @@ This repository contains the product, engineering, competition, and design-syste
 - [Vertical-slice roadmap](04-engineering/03-implementation-roadmap.md)
 - [Complete implementation plan](04-engineering/04-complete-implementation-plan.md)
 - [Development, production, Docker, and branch workflow](04-engineering/05-environments-and-branching.md)
+- [Implemented evidence-to-proposal slice](04-engineering/06-evidence-analysis-slice.md)
 
 ## Design system
 
