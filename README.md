@@ -41,11 +41,17 @@ Use Node 24.18 and pnpm 11.9:
 nvm use
 corepack enable
 pnpm install
-pnpm dev
+docker compose -f compose.dev.yaml up -d postgres
+cp .env.example apps/web/.env.local
+# In apps/web/.env.local, use:
+# DATABASE_URL=postgresql://rebuild:rebuild@localhost:55434/rebuild
+pnpm --filter @rebuild/web dev
 ```
 
-The web application runs at `http://localhost:3000`; the worker health endpoint
-runs at `http://localhost:3001/health/ready`.
+The web application runs at `http://localhost:3000`; PostgreSQL is isolated on
+local port `55434` to avoid collisions with other development projects. The
+database-backed readiness endpoint is
+`http://localhost:3000/api/health/ready`.
 
 To start the complete local environment (web, worker, PostgreSQL, and
 S3-compatible object storage):
