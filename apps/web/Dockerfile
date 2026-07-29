@@ -34,8 +34,11 @@ RUN addgroup --system --gid 1001 nodejs \
 COPY --from=builder --chown=nextjs:nodejs /workspace/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /workspace/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /workspace/apps/web/public ./apps/web/public
+COPY --from=builder --chown=nextjs:nodejs /workspace/packages/db/package.json ./packages/db/package.json
 COPY --from=builder --chown=nextjs:nodejs /workspace/packages/db/dist ./packages/db/dist
 COPY --from=builder --chown=nextjs:nodejs /workspace/packages/db/drizzle ./packages/db/drizzle
+COPY --from=builder --chown=nextjs:nodejs /workspace/packages/db/node_modules/drizzle-orm ./node_modules/drizzle-orm
+COPY --from=builder --chown=nextjs:nodejs /workspace/packages/db/node_modules/postgres ./node_modules/postgres
 USER nextjs
 EXPOSE 3000
 HEALTHCHECK --interval=15s --timeout=5s --start-period=20s --retries=6 \
