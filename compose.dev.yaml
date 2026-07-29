@@ -1,0 +1,107 @@
+name: rebuild-loop-dev
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      APP_ENV: development
+      APP_URL: http://localhost:${WEB_PORT:-3000}
+      BETTER_AUTH_URL: http://localhost:${WEB_PORT:-3000}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-development-only-secret-change-before-production}
+      DATABASE_URL: postgresql://rebuild:rebuild@postgres:5432/rebuild
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.6-flash}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY:-rebuild}
+      S3_BUCKET: ${S3_BUCKET:-rebuild-loop}
+      S3_ENDPOINT: http://object-store:9000
+      S3_FORCE_PATH_STYLE: "true"
+      S3_REGION: ${S3_REGION:-auto}
+      S3_SECRET_KEY: ${S3_SECRET_KEY:-development-object-store-secret}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      object-store:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/api/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    restart: unless-stopped
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/worker/Dockerfile
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql://rebuild:rebuild@postgres:5432/rebuild
+      WORKER_HEALTH_PORT: 3001
+    ports:
+      - "${WORKER_HEALTH_PORT:-3001}:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3001/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: rebuild
+      POSTGRES_PASSWORD: rebuild
+      POSTGRES_USER: rebuild
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U rebuild -d rebuild"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  object-store:
+    image: quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY:-development-object-store-secret}
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY:-rebuild}
+    ports:
+      - "${S3_API_PORT:-9000}:9000"
+      - "${S3_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - object-store-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  object-store-data:
+  postgres-data:

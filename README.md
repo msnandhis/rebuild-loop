@@ -2,7 +2,9 @@
 
 Research, product strategy, and implementation planning for the Google × AI House hackathon.
 
-This directory is the new independent ReBuild Loop repository. It begins on the `dev` branch and will contain the fresh implementation; the previous Google repository remains a research archive.
+This directory is the independent ReBuild Loop repository. Development happens
+on `dev`; releases are promoted to `main`. The previous Google root is retained
+outside this workspace as a recoverable legacy archive.
 
 ## Selected project
 
@@ -33,14 +35,36 @@ The complete documentation is organized by subject in [`docs/`](docs/README.md).
 
 ## Local development
 
-The application scaffold is the first implementation task. Once present, local development and testing run through Docker Compose:
+Use Node 24.18 and pnpm 11.9:
+
+```bash
+nvm use
+corepack enable
+pnpm install
+pnpm dev
+```
+
+The web application runs at `http://localhost:3000`; the worker health endpoint
+runs at `http://localhost:3001/health/ready`.
+
+To start the complete local environment (web, worker, PostgreSQL, and
+S3-compatible object storage):
 
 ```bash
 cp .env.example .env.development.local
 docker compose --env-file .env.development.local -f compose.dev.yaml up --build
 ```
 
-Production deploys tagged `main` commits to the VPS through Coolify. See the [environment and branch workflow](docs/04-engineering/05-environments-and-branching.md).
+Production uses the image-only `compose.prod.yaml` contract. Coolify injects
+secrets and immutable web/worker image tags; it does not build from a mutable
+working directory. See the [environment and branch workflow](docs/04-engineering/05-environments-and-branching.md).
+
+Implemented routes:
+
+- `/` — evidence-led product introduction
+- `/method` — method, responsibility, and limitations
+- `/projects/demo/review` — interactive three-part review workbench
+- `/api/health/live` and `/api/health/ready` — container health probes
 
 Quality checks:
 
