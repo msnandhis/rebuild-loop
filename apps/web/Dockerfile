@@ -14,7 +14,9 @@ RUN pnpm install --frozen-lockfile
 
 FROM dependencies AS builder
 COPY . .
-RUN pnpm --filter @rebuild/web build
+RUN pnpm --filter @rebuild/kernel build \
+  && pnpm --filter @rebuild/ui build \
+  && pnpm --filter @rebuild/web build
 
 FROM node:24.18.0-alpine AS runner
 ENV NODE_ENV=production
