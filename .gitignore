@@ -5,6 +5,7 @@
 env.sample
 Master/
 node_modules/
+.pnpm-store/
 .next/
 dist/
 coverage/

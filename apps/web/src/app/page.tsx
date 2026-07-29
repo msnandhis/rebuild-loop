@@ -6,6 +6,7 @@ import {
   FileCheck2,
   ScanLine,
 } from "lucide-react";
+import Link from "next/link";
 
 import { ActionLink, StatusTag } from "@rebuild/ui";
 
@@ -303,13 +304,13 @@ export default function HomePage() {
                   Decisions that can be audited.
                 </h2>
               </div>
-              <a
+              <Link
                 className="inline-flex min-h-11 items-center gap-2 self-start text-sm font-semibold text-action underline decoration-action/35 underline-offset-4 hover:decoration-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 href="/projects/demo/review"
               >
                 Inspect the full review
                 <ArrowRight aria-hidden="true" size={16} strokeWidth={1.75} />
-              </a>
+              </Link>
             </div>
             <div className="overflow-x-auto border border-rule">
               <table className="w-full min-w-[760px] border-collapse text-left text-sm">
