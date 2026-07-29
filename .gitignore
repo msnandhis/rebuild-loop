@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 env.sample
+Master/
 node_modules/
 .next/
 dist/
