@@ -7,8 +7,8 @@ export function SiteFooter() {
         <div>
           <BrandMark inverse />
           <p className="mt-4 max-w-md text-sm leading-6 text-white/70">
-            Decision support for pre-demolition material recovery. Every route
-            remains subject to evidence and professional review.
+            Review site photos and plan material recovery before demolition.
+            ReBuild Loop does not certify safety or compliance.
           </p>
         </div>
         <div className="flex items-start gap-8 text-sm">

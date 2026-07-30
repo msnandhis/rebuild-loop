@@ -22,7 +22,7 @@ export async function SiteHeader() {
             className="hidden min-h-11 items-center px-2 text-sm font-semibold text-ink-muted transition-colors hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:inline-flex"
             href="/method"
           >
-            Method & limitations
+            Method & limits
           </Link>
           {!session && (
             <>
