@@ -34,7 +34,7 @@ const plexMono = localFont({
 
 export const metadata: Metadata = {
   title: {
-    default: "ReBuild Loop — Recover building materials before demolition",
+    default: "ReBuild Loop | Recover building materials before demolition",
     template: "%s · ReBuild Loop",
   },
   description:
