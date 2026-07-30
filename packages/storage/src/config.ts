@@ -3,6 +3,7 @@ export interface StorageConfig {
   bucket: string;
   forcePathStyle: boolean;
   internalEndpoint: string;
+  manageBucketCors: boolean;
   publicEndpoint: string;
   region: string;
   secretAccessKey: string;
@@ -42,7 +43,7 @@ function readBoolean(value: string | undefined, fallback: boolean): boolean {
     return false;
   }
 
-  throw new Error("S3_FORCE_PATH_STYLE must be true or false");
+  throw new Error("Storage boolean settings must be true or false");
 }
 
 export function readStorageConfig(
@@ -53,6 +54,7 @@ export function readStorageConfig(
     bucket: requireValue(input, "S3_BUCKET"),
     forcePathStyle: readBoolean(input.S3_FORCE_PATH_STYLE, true),
     internalEndpoint: requireHttpUrl(input, "S3_INTERNAL_ENDPOINT"),
+    manageBucketCors: readBoolean(input.S3_MANAGE_BUCKET_CORS, true),
     publicEndpoint: requireHttpUrl(input, "S3_PUBLIC_ENDPOINT"),
     region: requireValue(input, "S3_REGION"),
     secretAccessKey: requireValue(input, "S3_SECRET_KEY"),

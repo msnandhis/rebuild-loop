@@ -75,6 +75,10 @@ export async function ensurePrivateBucket(
     throw new Error(`Object bucket is unavailable (${response.status})`);
   }
 
+  if (!client.config.manageBucketCors) {
+    return;
+  }
+
   const corsUrl = objectUrl(client, bucket);
   corsUrl.searchParams.set("cors", "");
   const cors = `<CORSConfiguration><CORSRule><AllowedOrigin>${escapeXml(allowedOrigin)}</AllowedOrigin><AllowedMethod>PUT</AllowedMethod><AllowedMethod>GET</AllowedMethod><AllowedMethod>HEAD</AllowedMethod><AllowedHeader>content-type</AllowedHeader><AllowedHeader>x-amz-checksum-sha256</AllowedHeader><ExposeHeader>etag</ExposeHeader><MaxAgeSeconds>600</MaxAgeSeconds></CORSRule></CORSConfiguration>`;

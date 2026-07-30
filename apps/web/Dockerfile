@@ -7,13 +7,16 @@ WORKDIR /workspace
 
 FROM base AS dependencies
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+COPY apps/evals/package.json apps/evals/package.json
 COPY apps/web/package.json apps/web/package.json
+COPY apps/worker/package.json apps/worker/package.json
 COPY packages/analysis/package.json packages/analysis/package.json
 COPY packages/db/package.json packages/db/package.json
 COPY packages/kernel/package.json packages/kernel/package.json
 COPY packages/storage/package.json packages/storage/package.json
 COPY packages/ui/package.json packages/ui/package.json
-RUN pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=rebuild-pnpm,target=/pnpm/store \
+  pnpm install --filter @rebuild/web... --frozen-lockfile --trust-lockfile
 
 FROM dependencies AS builder
 ENV BETTER_AUTH_URL="http://localhost:3000"
@@ -25,8 +28,10 @@ RUN pnpm --filter @rebuild/analysis build \
   && pnpm --filter @rebuild/kernel build \
   && pnpm --filter @rebuild/db build \
   && pnpm --filter @rebuild/storage build \
-  && pnpm --filter @rebuild/ui build \
-  && pnpm --filter @rebuild/web build
+  && pnpm --filter @rebuild/ui build
+RUN --mount=type=cache,id=rebuild-next,target=/workspace/apps/web/.next/cache \
+  pnpm --filter @rebuild/web typecheck \
+  && NEXT_SKIP_BUILTIN_TYPECHECK=1 pnpm --filter @rebuild/web build
 
 FROM node:24.18.0-alpine AS runner
 ENV NODE_ENV=production

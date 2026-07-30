@@ -65,11 +65,27 @@ describe("storage configuration and signing", () => {
     const url = new URL(signed.url);
 
     expect(config.internalEndpoint).toBe("http://object-store:9000");
+    expect(config.manageBucketCors).toBe(true);
     expect(url.origin).toBe("https://uploads.example.test");
     expect(signed.headers).toEqual({
       "content-type": "image/jpeg",
       "x-amz-checksum-sha256": "YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFhYWE=",
     });
     expect(url.searchParams.get("X-Amz-Expires")).toBe("600");
+  });
+
+  test("allows endpoint-managed CORS to disable bucket CORS mutation", () => {
+    const config = readStorageConfig({
+      S3_ACCESS_KEY: "test-access",
+      S3_BUCKET: "rebuild-loop",
+      S3_FORCE_PATH_STYLE: "true",
+      S3_INTERNAL_ENDPOINT: "http://object-store:9000",
+      S3_MANAGE_BUCKET_CORS: "false",
+      S3_PUBLIC_ENDPOINT: "https://uploads.example.test",
+      S3_REGION: "auto",
+      S3_SECRET_KEY: "test-secret",
+    });
+
+    expect(config.manageBucketCors).toBe(false);
   });
 });

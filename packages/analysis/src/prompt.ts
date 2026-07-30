@@ -74,9 +74,8 @@ export async function analyzeEvidenceWithGemini(
         },
       ],
       generationConfig: {
-        responseJsonSchema: jsonSchema,
+        responseJsonSchema: ANALYSIS_RESPONSE_JSON_SCHEMA,
         responseMimeType: "application/json",
-        temperature: 0.1,
       },
       systemInstruction: {
         parts: [{ text: SYSTEM_INSTRUCTION }],
@@ -129,12 +128,11 @@ export class GeminiProviderError extends Error {
   }
 }
 
-const jsonSchema = {
+export const ANALYSIS_RESPONSE_JSON_SCHEMA = {
   type: "object",
   properties: {
     candidates: {
       type: "array",
-      maxItems: 20,
       items: {
         type: "object",
         required: [
@@ -158,10 +156,9 @@ const jsonSchema = {
             type: "string",
             enum: ["GOOD", "FAIR", "POOR", "DAMAGED", "UNKNOWN"],
           },
-          conditionConfidence: { type: "number", minimum: 0, maximum: 1 },
+          conditionConfidence: { type: "number" },
           evidence: {
             type: "array",
-            minItems: 1,
             items: {
               type: "object",
               required: ["assetId", "observation"],
@@ -172,10 +169,10 @@ const jsonSchema = {
                   type: "object",
                   required: ["height", "width", "x", "y"],
                   properties: {
-                    height: { type: "number", exclusiveMinimum: 0, maximum: 1 },
-                    width: { type: "number", exclusiveMinimum: 0, maximum: 1 },
-                    x: { type: "number", minimum: 0, exclusiveMaximum: 1 },
-                    y: { type: "number", minimum: 0, exclusiveMaximum: 1 },
+                    height: { type: "number" },
+                    width: { type: "number" },
+                    x: { type: "number" },
+                    y: { type: "number" },
                   },
                 },
               },
@@ -195,7 +192,7 @@ const jsonSchema = {
             ],
           },
           observationSummary: { type: "string" },
-          overallConfidence: { type: "number", minimum: 0, maximum: 1 },
+          overallConfidence: { type: "number" },
           preliminaryPathway: {
             type: "string",
             enum: [
@@ -212,9 +209,9 @@ const jsonSchema = {
             required: ["basis", "confidence", "maximum", "minimum", "unit"],
             properties: {
               basis: { type: "string" },
-              confidence: { type: "number", minimum: 0, maximum: 1 },
-              maximum: { type: "number", minimum: 0 },
-              minimum: { type: "number", minimum: 0 },
+              confidence: { type: "number" },
+              maximum: { type: "number" },
+              minimum: { type: "number" },
               unit: {
                 type: "string",
                 enum: ["ITEM", "M2", "M3", "M", "KG", "TONNE", "UNKNOWN"],

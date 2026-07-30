@@ -11,7 +11,7 @@ PostgreSQL source of truth and PostgreSQL-backed jobs
         +
 Private S3-compatible object storage
         +
-Stable Gemini 3.5 Flash through @google/genai
+Stable Gemini 3.6 Flash through the Gemini API
         +
 Deterministic TypeScript rules, matching and impact calculations
         +
@@ -20,7 +20,7 @@ Docker Compose deployed through Coolify
 
 Next.js 16.2 is the current stable release; 16.3 is preview. Use App Router and `app/**/route.ts` Route Handlers rather than Express or a second API framework. Sources: [Next.js 16.2](https://nextjs.org/blog/next-16-2), [App Router](https://nextjs.org/docs/app), [Route Handlers](https://nextjs.org/docs/app/getting-started/route-handlers).
 
-Use stable, pinned `gemini-3.5-flash`, not a floating `latest` alias or preview model. Source: [Gemini model catalogue](https://ai.google.dev/gemini-api/docs/models).
+Use stable, pinned `gemini-3.6-flash`, not a floating `latest` alias or preview model. Source: [Gemini model catalogue](https://ai.google.dev/gemini-api/docs/models).
 
 ## Responsibility boundary
 

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "rm -rf dist && esbuild src/index.ts --bundle --platform=node --format=esm --target=node24 --outfile=dist/index.js",
+    "build": "rm -rf dist && esbuild src/index.ts --bundle --platform=node --format=esm --target=node24 --external:sharp --outfile=dist/index.js",
     "clean": "rm -rf dist",
     "dev": "tsx watch src/index.ts",
     "lint": "tsc --noEmit",

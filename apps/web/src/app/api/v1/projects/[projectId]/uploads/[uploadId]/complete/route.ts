@@ -23,7 +23,12 @@ export async function POST(
 
   const { projectId, uploadId } = await context.params;
   if (!isUuid(projectId) || !isUuid(uploadId)) {
-    return apiProblem(404, "Upload not found.", correlationId);
+    return apiProblem(
+      404,
+      "The upload reference is invalid.",
+      correlationId,
+      "INVALID_UPLOAD_REFERENCE",
+    );
   }
 
   try {
@@ -31,7 +36,12 @@ export async function POST(
     return apiJson({ ...result, correlationId }, 202);
   } catch (error) {
     if (error instanceof EvidenceNotFoundError) {
-      return apiProblem(404, "Upload not found.", correlationId);
+      return apiProblem(
+        404,
+        "The upload record was not found.",
+        correlationId,
+        "UPLOAD_NOT_FOUND",
+      );
     }
     if (error instanceof EvidenceConflictError) {
       return apiProblem(409, error.message, correlationId, "CONFLICT");
