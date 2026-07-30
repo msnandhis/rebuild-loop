@@ -15,6 +15,13 @@
       "when": 1785314830512,
       "tag": "0001_spotty_firebrand",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1785348823366,
+      "tag": "0002_silky_zarda",
+      "breakpoints": true
     }
   ]
 }

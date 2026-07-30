@@ -1,22 +1,35 @@
 import type { Metadata } from "next";
-import { IBM_Plex_Mono, Inter, Quicksand } from "next/font/google";
+import localFont from "next/font/local";
 
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  display: "swap",
+  src: "../../public/fonts/inter-latin-variable.woff2",
   variable: "--font-inter",
+  weight: "100 900",
 });
 
-const quicksand = Quicksand({
-  subsets: ["latin"],
+const quicksand = localFont({
+  display: "swap",
+  src: "../../public/fonts/quicksand-latin-variable.woff2",
   variable: "--font-quicksand",
+  weight: "300 700",
 });
 
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
+const plexMono = localFont({
+  display: "swap",
+  src: [
+    {
+      path: "../../public/fonts/ibm-plex-mono-latin-400.woff2",
+      weight: "400",
+    },
+    {
+      path: "../../public/fonts/ibm-plex-mono-latin-500.woff2",
+      weight: "500",
+    },
+  ],
   variable: "--font-plex-mono",
-  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {

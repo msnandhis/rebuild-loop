@@ -12,8 +12,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@rebuild/analysis": "workspace:*",
     "@rebuild/db": "workspace:*",
     "@rebuild/kernel": "workspace:*",
+    "@rebuild/storage": "workspace:*",
     "@rebuild/ui": "workspace:*",
     "better-auth": "1.6.25",
     "drizzle-orm": "0.45.2",

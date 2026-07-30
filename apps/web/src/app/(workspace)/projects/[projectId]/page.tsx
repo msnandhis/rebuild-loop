@@ -10,17 +10,11 @@ import { notFound } from "next/navigation";
 
 import { StatusTag } from "@rebuild/ui";
 
-import { findOwnedProject } from "../../../../lib/projects";
+import {
+  findActiveProjectAnalysis,
+  findOwnedProject,
+} from "../../../../lib/projects";
 import { requireSession } from "../../../../lib/session";
-
-const stages = [
-  ["01", "Site brief", "done"],
-  ["02", "Capture", "current"],
-  ["03", "Review", "blocked"],
-  ["04", "Materials ledger", "blocked"],
-  ["05", "Recovery routes", "blocked"],
-  ["06", "Recovery pack", "blocked"],
-] as const;
 
 export default async function ProjectPage({
   params,
@@ -34,6 +28,34 @@ export default async function ProjectPage({
   if (!project) {
     notFound();
   }
+
+  const activeAnalysis =
+    project.status === "ANALYSING"
+      ? await findActiveProjectAnalysis(project.id, session.user.id)
+      : null;
+  const statusView = getStatusView(
+    project.status,
+    project.id,
+    activeAnalysis?.id,
+  );
+  const stages = [
+    ["01", "Site brief"],
+    ["02", "Capture"],
+    ["03", "Review"],
+    ["04", "Materials ledger"],
+    ["05", "Recovery routes"],
+    ["06", "Recovery pack"],
+  ].map(([number, label], index) => [
+    number,
+    label,
+    index + 1 < statusView.stage
+      ? "done"
+      : index + 1 === statusView.stage
+        ? "current"
+        : "blocked",
+  ]) as ReadonlyArray<
+    readonly [string, string, "blocked" | "current" | "done"]
+  >;
 
   return (
     <div className="mx-auto max-w-[1200px] px-5 py-8 md:px-8 md:py-12">
@@ -52,7 +74,7 @@ export default async function ProjectPage({
               <span className="font-mono text-xs text-ink-muted">
                 {project.code}
               </span>
-              <StatusTag tone="attention">Capture required</StatusTag>
+              <StatusTag tone={statusView.tone}>{statusView.label}</StatusTag>
             </div>
             <h1 className="mt-3 font-heading text-3xl font-bold tracking-[-0.035em] md:text-4xl">
               {project.name}
@@ -120,10 +142,10 @@ export default async function ProjectPage({
                   }`}
                   key={number}
                 >
-                  {state === "current" ? (
+                  {state === "current" && statusView.stage <= 3 ? (
                     <Link
                       className="grid min-h-14 grid-cols-[30px_1fr] items-center gap-2 px-4 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-focus"
-                      href={`/projects/${project.id}/capture`}
+                      href={statusView.href}
                     >
                       {content}
                     </Link>
@@ -146,18 +168,16 @@ export default async function ProjectPage({
           <section className="border border-rule bg-paper">
             <div className="border-b border-rule px-5 py-4 md:px-6">
               <p className="font-mono text-[11px] text-ink-muted">
-                CURRENT ACTION / 02
+                CURRENT ACTION / {String(statusView.stage).padStart(2, "0")}
               </p>
               <h2 className="mt-2 font-heading text-2xl font-bold">
-                Add the initial evidence set.
+                {statusView.title}
               </h2>
             </div>
             <div className="grid gap-6 p-5 md:grid-cols-[1fr_auto] md:items-end md:p-6">
               <div>
                 <p className="max-w-2xl leading-7 text-ink-muted">
-                  The site brief and ownership boundary are active. Collect
-                  clear site images that show overall context, connections,
-                  condition, labels, and a known scale.
+                  {statusView.description}
                 </p>
                 <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2">
                   <div className="border-l-2 border-rule pl-3">
@@ -180,9 +200,9 @@ export default async function ProjectPage({
               </div>
               <Link
                 className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-action bg-action px-5 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-                href={`/projects/${project.id}/capture`}
+                href={statusView.href}
               >
-                Prepare evidence
+                {statusView.action}
                 <ArrowRight aria-hidden="true" size={17} strokeWidth={1.75} />
               </Link>
             </div>
@@ -191,4 +211,94 @@ export default async function ProjectPage({
       </div>
     </div>
   );
+}
+
+type ProjectStatus =
+  | "APPROVED"
+  | "ANALYSING"
+  | "DRAFT"
+  | "INTAKE_READY"
+  | "INVENTORY_CONFIRMED"
+  | "PLAN_DRAFTED"
+  | "REVIEW_REQUIRED";
+
+function getStatusView(
+  status: ProjectStatus,
+  projectId: string,
+  activeAnalysisId?: string,
+) {
+  const captureHref = `/projects/${projectId}/capture`;
+  const reviewHref = `/projects/${projectId}/review`;
+
+  switch (status) {
+    case "ANALYSING":
+      return {
+        action: activeAnalysisId ? "View analysis run" : "View evidence",
+        description:
+          "A durable analysis is running against the verified evidence. You can leave it processing and return to the same record.",
+        href: activeAnalysisId
+          ? `/projects/${projectId}/analysis/${activeAnalysisId}`
+          : captureHref,
+        label: "Analysis in progress",
+        stage: 2,
+        title: "Verified evidence is being analysed.",
+        tone: "evidence" as const,
+      };
+    case "REVIEW_REQUIRED":
+      return {
+        action: "Inspect proposals",
+        description:
+          "The analysis passed structural and evidence-reference validation. Inspect each proposal beside its source images and unresolved questions.",
+        href: reviewHref,
+        label: "Inspection available",
+        stage: 3,
+        title: "Inspect the evidence-linked proposals.",
+        tone: "attention" as const,
+      };
+    case "INVENTORY_CONFIRMED":
+      return {
+        action: "Inspect source proposals",
+        description:
+          "The material inventory is recorded. The controlled ledger workflow is the active project stage.",
+        href: reviewHref,
+        label: "Inventory confirmed",
+        stage: 4,
+        title: "Material inventory confirmed.",
+        tone: "verified" as const,
+      };
+    case "PLAN_DRAFTED":
+      return {
+        action: "Inspect source proposals",
+        description:
+          "A recovery plan has been drafted from the confirmed inventory and remains subject to its approval controls.",
+        href: reviewHref,
+        label: "Plan drafted",
+        stage: 5,
+        title: "Recovery routes drafted.",
+        tone: "evidence" as const,
+      };
+    case "APPROVED":
+      return {
+        action: "Inspect source proposals",
+        description:
+          "The controlled recovery pack has reached its approved project state.",
+        href: reviewHref,
+        label: "Approved",
+        stage: 6,
+        title: "Recovery pack approved.",
+        tone: "verified" as const,
+      };
+    case "DRAFT":
+    case "INTAKE_READY":
+      return {
+        action: "Prepare evidence",
+        description:
+          "The site brief and ownership boundary are active. Collect clear site images that show overall context, connections, condition, labels, and a known scale.",
+        href: captureHref,
+        label: "Capture required",
+        stage: 2,
+        title: "Add the initial evidence set.",
+        tone: "attention" as const,
+      };
+  }
 }

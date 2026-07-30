@@ -1,7 +1,7 @@
 import "server-only";
 
-import { auditEvents, getDatabase, projects } from "@rebuild/db";
-import { and, desc, eq } from "drizzle-orm";
+import { analysisRuns, auditEvents, getDatabase, projects } from "@rebuild/db";
+import { and, desc, eq, inArray } from "drizzle-orm";
 
 export async function listProjects(ownerUserId: string) {
   return getDatabase()
@@ -25,6 +25,26 @@ export async function findOwnedProject(projectId: string, ownerUserId: string) {
     .limit(1);
 
   return project ?? null;
+}
+
+export async function findActiveProjectAnalysis(
+  projectId: string,
+  ownerUserId: string,
+) {
+  const [run] = await getDatabase()
+    .select({ id: analysisRuns.id })
+    .from(analysisRuns)
+    .where(
+      and(
+        eq(analysisRuns.projectId, projectId),
+        eq(analysisRuns.ownerUserId, ownerUserId),
+        inArray(analysisRuns.status, ["QUEUED", "RUNNING"]),
+      ),
+    )
+    .orderBy(desc(analysisRuns.createdAt))
+    .limit(1);
+
+  return run ?? null;
 }
 
 function isUuid(value: string): boolean {
