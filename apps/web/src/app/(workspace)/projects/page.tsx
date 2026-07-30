@@ -1,12 +1,10 @@
-import { ChevronRight, Plus } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 import { StatusTag } from "@rebuild/ui";
 
-import {
-  primaryControl,
-  secondaryControl,
-} from "../../../components/workspace/controls";
+import { NewProjectDialog } from "../../../components/projects/new-project-dialog";
+import { secondaryControl } from "../../../components/workspace/controls";
 import { EmptyState } from "../../../components/workspace/empty-state";
 import { Panel } from "../../../components/workspace/panel";
 import { projectStatusView } from "../../../lib/project-status";
@@ -20,16 +18,14 @@ export const metadata = {
 export default async function ProjectsPage() {
   const session = await requireSession();
   const projectRows = await listProjects(session.user.id);
+  const submissionToken = crypto.randomUUID();
 
   return (
     <div className="mx-auto max-w-[1360px] px-5 py-7 md:px-8">
       <Panel
         actions={
           projectRows.length ? (
-            <Link className={primaryControl} href="/projects/new">
-              <Plus aria-hidden="true" size={15} strokeWidth={1.75} />
-              New project
-            </Link>
+            <NewProjectDialog submissionToken={submissionToken} />
           ) : null
         }
         status={
@@ -47,9 +43,10 @@ export default async function ProjectsPage() {
           <EmptyState
             action={
               <div className="flex flex-wrap gap-2">
-                <Link className={primaryControl} href="/projects/new">
-                  Create a project
-                </Link>
+                <NewProjectDialog
+                  label="Create a project"
+                  submissionToken={submissionToken}
+                />
                 <Link className={secondaryControl} href="/projects/demo/review">
                   Open demonstration
                 </Link>

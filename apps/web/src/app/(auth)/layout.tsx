@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 import { BrandMark } from "../../components/brand-mark";
@@ -29,7 +30,14 @@ export default function AuthLayout({
         </div>
         <p className="text-xs text-white/45">Field workspace</p>
       </section>
-      <section className="flex min-h-screen items-center justify-center bg-paper px-5 py-10 sm:px-8 lg:bg-canvas">
+      <section className="relative flex min-h-screen items-center justify-center bg-paper px-5 py-20 sm:px-8 lg:bg-canvas">
+        <Link
+          className="absolute top-5 right-5 inline-flex min-h-11 items-center gap-2 rounded-full border border-rule-strong bg-paper px-4 text-sm font-semibold text-ink transition-colors hover:border-ink hover:bg-paper-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:top-8 sm:right-8"
+          href="/"
+        >
+          <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.75} />
+          Back
+        </Link>
         <div className="w-full max-w-[420px] bg-paper lg:border lg:border-rule lg:p-8">
           <Link
             aria-label="ReBuild Loop home"

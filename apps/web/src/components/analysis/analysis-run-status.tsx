@@ -24,6 +24,7 @@ type AnalysisPhase =
   | "FAILED";
 
 interface AnalysisRecord {
+  candidateCount: number;
   completedAt: string | null;
   createdAt: string;
   id: string;
@@ -176,6 +177,7 @@ export function AnalysisRunStatus({
   );
   const terminal =
     analysis.status === "SUCCEEDED" || analysis.status === "FAILED";
+  const hasProposals = analysis.candidateCount > 0;
 
   async function retry() {
     setRetryError(null);
@@ -218,15 +220,19 @@ export function AnalysisRunStatus({
         </p>
         <h2 className="mt-2 font-heading text-2xl font-bold">
           {analysis.status === "SUCCEEDED"
-            ? "Candidate review is ready."
+            ? hasProposals
+              ? "Candidate review is ready."
+              : "No material proposals found."
             : analysis.status === "FAILED"
               ? "Analysis needs attention."
               : "Evidence analysis is in progress."}
         </h2>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">
-          {terminal
-            ? `${analysis.inputCount} verified ${analysis.inputCount === 1 ? "image was" : "images were"} retained with this run.`
-            : "You can leave this page. Processing continues in the background and this run remains available."}
+          {analysis.status === "SUCCEEDED" && !hasProposals
+            ? "The selected images did not provide enough visible material evidence. Add a wider site view or a clear component photo and run the analysis again."
+            : terminal
+              ? `${analysis.inputCount} verified ${analysis.inputCount === 1 ? "image was" : "images were"} retained with this run.`
+              : "You can leave this page. Processing continues in the background and this run remains available."}
         </p>
       </div>
 
@@ -369,12 +375,12 @@ export function AnalysisRunStatus({
             ? "Start a new analysis"
             : "Back to evidence"}
         </Link>
-        {analysis.status === "SUCCEEDED" && (
+        {analysis.status === "SUCCEEDED" && hasProposals && (
           <Link
             className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-action bg-action px-5 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             href={`/projects/${projectId}/review`}
           >
-            Inspect proposals
+            Review
             <ArrowRight aria-hidden="true" size={17} strokeWidth={1.75} />
           </Link>
         )}
@@ -384,7 +390,9 @@ export function AnalysisRunStatus({
         {analysis.status === "FAILED"
           ? "Analysis failed. No proposals were published."
           : analysis.status === "SUCCEEDED"
-            ? "Analysis complete. Candidate review is ready."
+            ? hasProposals
+              ? `Analysis complete. ${analysis.candidateCount} ${analysis.candidateCount === 1 ? "proposal is" : "proposals are"} ready for review.`
+              : "Analysis complete. No material proposals were supported by the selected evidence."
             : `${phases[currentPhaseIndex]?.[1] ?? "Analysis in progress"}.`}
       </p>
     </div>

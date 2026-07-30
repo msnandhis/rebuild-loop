@@ -12,8 +12,12 @@ import {
 const initialState: ProjectFormState = {};
 
 export function NewProjectForm({
+  embedded = false,
+  onCancel,
   submissionToken,
 }: {
+  embedded?: boolean;
+  onCancel?: () => void;
   submissionToken: string;
 }) {
   const [state, formAction, pending] = useActionState(
@@ -24,7 +28,7 @@ export function NewProjectForm({
   return (
     <form
       action={formAction}
-      className="border border-rule bg-paper px-5 py-6 md:px-6"
+      className={`${embedded ? "bg-paper" : "border border-rule bg-paper"} px-5 py-6 md:px-6`}
     >
       <input name="submissionToken" type="hidden" value={submissionToken} />
       {state.error && (
@@ -152,13 +156,23 @@ export function NewProjectForm({
       </details>
 
       <div className="mt-6 flex flex-col-reverse justify-between gap-3 sm:flex-row">
-        <Link
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 text-[13px] font-semibold text-ink-muted transition-colors hover:bg-paper-subtle hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-          href="/projects"
-        >
-          <ArrowLeft aria-hidden="true" size={17} strokeWidth={1.75} />
-          Back to projects
-        </Link>
+        {onCancel ? (
+          <button
+            className="inline-flex min-h-11 items-center justify-center rounded-lg px-3 text-[13px] font-semibold text-ink-muted transition-colors hover:bg-paper-subtle hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            onClick={onCancel}
+            type="button"
+          >
+            Cancel
+          </button>
+        ) : (
+          <Link
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 text-[13px] font-semibold text-ink-muted transition-colors hover:bg-paper-subtle hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            href="/projects"
+          >
+            <ArrowLeft aria-hidden="true" size={17} strokeWidth={1.75} />
+            Back to projects
+          </Link>
+        )}
         <button
           className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-action bg-action px-5 text-[13px] font-semibold text-white transition-colors hover:border-ink hover:bg-ink disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           disabled={pending}

@@ -26,9 +26,14 @@ export async function GET(
   }
 
   try {
-    const { inputs, run } = await findAnalysis(analysisId, projectId, user.id);
+    const { candidateCount, inputs, run } = await findAnalysis(
+      analysisId,
+      projectId,
+      user.id,
+    );
     return apiJson({
       analysis: {
+        candidateCount,
         completedAt: run.completedAt?.toISOString() ?? null,
         createdAt: run.createdAt.toISOString(),
         id: run.id,

@@ -6,13 +6,14 @@ import {
   analysisInputs,
   analysisRuns,
   auditEvents,
+  candidateRevisions,
   getDatabase,
   mediaAssets,
   projects,
   workflowJobs,
 } from "@rebuild/db";
 import { PROMPT_VERSION, SCHEMA_VERSION } from "@rebuild/analysis";
-import { and, asc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray } from "drizzle-orm";
 
 export class AnalysisConflictError extends Error {}
 export class AnalysisNotFoundError extends Error {}
@@ -198,7 +199,8 @@ export async function findAnalysis(
   projectId: string,
   ownerUserId: string,
 ) {
-  const [run] = await getDatabase()
+  const database = getDatabase();
+  const [run] = await database
     .select()
     .from(analysisRuns)
     .where(
@@ -214,7 +216,7 @@ export async function findAnalysis(
     throw new AnalysisNotFoundError("Analysis not found");
   }
 
-  const inputs = await getDatabase()
+  const inputs = await database
     .select({
       mediaAssetId: analysisInputs.mediaAssetId,
       ordinal: analysisInputs.ordinal,
@@ -229,7 +231,38 @@ export async function findAnalysis(
     )
     .orderBy(asc(analysisInputs.ordinal));
 
-  return { inputs, run };
+  const candidateCount = await database.$count(
+    candidateRevisions,
+    and(
+      eq(candidateRevisions.analysisRunId, analysisId),
+      eq(candidateRevisions.projectId, projectId),
+      eq(candidateRevisions.ownerUserId, ownerUserId),
+    ),
+  );
+
+  return { candidateCount, inputs, run };
+}
+
+export async function findLatestProjectAnalysis(
+  projectId: string,
+  ownerUserId: string,
+) {
+  const [run] = await getDatabase()
+    .select({
+      id: analysisRuns.id,
+      status: analysisRuns.status,
+    })
+    .from(analysisRuns)
+    .where(
+      and(
+        eq(analysisRuns.projectId, projectId),
+        eq(analysisRuns.ownerUserId, ownerUserId),
+      ),
+    )
+    .orderBy(desc(analysisRuns.createdAt))
+    .limit(1);
+
+  return run ?? null;
 }
 
 export async function retryAnalysis(input: RetryAnalysisInput) {
