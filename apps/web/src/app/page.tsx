@@ -17,30 +17,30 @@ import { SiteHeader } from "../components/site-header";
 const stages = [
   {
     number: "01",
-    title: "Capture what is actually there",
+    title: "Add site photos",
     description:
-      "A guided site manifest connects photos, video, plans, BOQs, and measurements to the part of the building they describe.",
+      "Upload photos of the materials and parts you want to check before work begins.",
     icon: Camera,
   },
   {
     number: "02",
-    title: "Review model proposals",
+    title: "Review Gemini’s suggestions",
     description:
-      "Each material candidate carries its evidence references, uncertainty, missing information, and required human decision.",
+      "Gemini suggests what may be visible, points to the source photo, and lists what the photo cannot prove.",
     icon: ScanLine,
   },
   {
     number: "03",
-    title: "Approve a recovery route",
+    title: "Make the decision",
     description:
-      "Rule-based gates separate direct reuse, repair, recycling, specialist review, and EPR-relevant mineral streams.",
+      "Accept, correct, or reject each suggestion. Ask for another photo or specialist advice when information is missing.",
     icon: ClipboardCheck,
   },
   {
     number: "04",
-    title: "Export the recovery pack",
+    title: "Approve the recovery plan",
     description:
-      "The approved ledger becomes a traceable plan with limitations, evidence links, and a formal sign-off record.",
+      "The final plan keeps the photos, changes, decisions, limits, and named approver together.",
     icon: FileCheck2,
   },
 ];
@@ -49,25 +49,25 @@ const registerRows = [
   {
     ref: "MAT-014",
     item: "Steel I-section",
-    evidence: "IMG-128 · BOQ-41",
-    route: "Direct reuse",
-    status: "Ready for review",
-    tone: "verified" as const,
+    evidence: "IMG-128",
+    route: "Check for reuse",
+    status: "Needs review",
+    tone: "attention" as const,
   },
   {
     ref: "MAT-021",
-    item: "Timber floor joists",
-    evidence: "VID-08 · 00:14",
-    route: "Repair / reuse",
-    status: "Close-up needed",
+    item: "Timber door",
+    evidence: "IMG-141",
+    route: "Specialist review",
+    status: "More photos needed",
     tone: "attention" as const,
   },
   {
     ref: "MAT-036",
     item: "Mineral rubble",
-    evidence: "IMG-203 · ZN-C",
-    route: "EPR register",
-    status: "Quantity pending",
+    evidence: "IMG-203",
+    route: "Keep separate",
+    status: "Quantity missing",
     tone: "evidence" as const,
   },
 ];
@@ -81,15 +81,15 @@ export default function HomePage() {
           <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:px-8 md:py-16 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
             <div>
               <h1 className="max-w-2xl font-heading text-[2.5rem] leading-[1.08] font-bold tracking-[-0.045em] text-ink md:text-[3.5rem] md:leading-[1.1]">
-                Find reusable materials before demolition.
+                Plan what to recover before demolition starts.
               </h1>
               <p className="mt-5 max-w-lg text-lg leading-8 text-ink-muted">
-                Capture the site, verify the findings, and approve a recovery
-                plan before work begins.
+                Turn site photos into a materials list that people review,
+                correct, and approve before useful items become mixed waste.
               </p>
               <div className="mt-7">
                 <ActionLink href="/projects/demo/review">
-                  Explore a sample project
+                  Explore a sample review
                   <ArrowRight aria-hidden="true" size={17} strokeWidth={1.75} />
                 </ActionLink>
               </div>
@@ -114,16 +114,16 @@ export default function HomePage() {
           <div className="mx-auto grid max-w-7xl divide-y divide-white/15 px-5 md:grid-cols-3 md:divide-x md:divide-y-0 md:px-8">
             {[
               [
-                "Evidence first",
-                "Every proposal links back to a photo, file, timecode, or measurement.",
+                "Start with photos",
+                "Every suggestion points back to the site photo it came from.",
               ],
               [
-                "Human decided",
-                "Approval gates give professionals the final word—and record who decided.",
+                "People make the call",
+                "Gemini can suggest. It cannot approve its own work.",
               ],
               [
-                "Limitations visible",
-                "Unknowns and specialist checks travel with the material, not in hidden notes.",
+                "Keep unknowns visible",
+                "Missing details stay open until someone checks them.",
               ],
             ].map(([title, body]) => (
               <div
@@ -153,15 +153,15 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
             <div className="grid gap-8 border-b border-rule pb-10 md:grid-cols-[0.7fr_1.3fr]">
               <p className="font-mono text-xs font-medium tracking-[0.16em] text-action uppercase">
-                From survey to sign-off
+                How it works
               </p>
               <div>
                 <h2 className="max-w-3xl font-heading text-3xl leading-tight font-bold tracking-[-0.035em] md:text-4xl">
-                  A review workflow, not a black-box waste forecast.
+                  From site photos to an approved recovery plan.
                 </h2>
                 <p className="mt-4 max-w-2xl leading-7 text-ink-muted">
-                  ReBuild Loop separates what the evidence shows, what the model
-                  proposes, and what a responsible person has approved.
+                  The source photo, Gemini’s suggestion, and the person’s
+                  decision always remain separate and clear.
                 </p>
               </div>
             </div>
@@ -199,17 +199,21 @@ export default function HomePage() {
             <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div>
                 <p className="font-mono text-xs font-medium tracking-[0.16em] text-action uppercase">
-                  Materials register / sample
+                  Example materials list
                 </p>
                 <h2 className="mt-3 font-heading text-3xl font-bold tracking-[-0.035em]">
-                  Decisions that can be audited.
+                  A clear record for every item.
                 </h2>
+                <p className="mt-3 max-w-2xl leading-7 text-ink-muted">
+                  Each item keeps its source photo, suggested next step, and
+                  review status. These sample entries are for demonstration.
+                </p>
               </div>
               <Link
                 className="inline-flex min-h-11 items-center gap-2 self-start text-sm font-semibold text-action underline decoration-action/35 underline-offset-4 hover:decoration-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 href="/projects/demo/review"
               >
-                Inspect the full review
+                See how an item is reviewed
                 <ArrowRight aria-hidden="true" size={16} strokeWidth={1.75} />
               </Link>
             </div>
@@ -219,9 +223,11 @@ export default function HomePage() {
                   <tr>
                     <th className="px-4 py-3 font-medium">Reference</th>
                     <th className="px-4 py-3 font-medium">Material item</th>
-                    <th className="px-4 py-3 font-medium">Evidence</th>
-                    <th className="px-4 py-3 font-medium">Proposed route</th>
-                    <th className="px-4 py-3 font-medium">Review state</th>
+                    <th className="px-4 py-3 font-medium">Source photo</th>
+                    <th className="px-4 py-3 font-medium">
+                      Suggested next step
+                    </th>
+                    <th className="px-4 py-3 font-medium">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-rule">
@@ -250,14 +256,14 @@ export default function HomePage() {
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 md:grid-cols-[1fr_auto] md:items-center md:px-8 md:py-20">
             <div>
               <p className="font-mono text-xs font-medium tracking-[0.16em] text-action uppercase">
-                Demonstration workspace
+                Try the example
               </p>
               <h2 className="mt-3 max-w-2xl font-heading text-3xl font-bold tracking-[-0.035em]">
-                See the evidence, uncertainty, and approval gate together.
+                See how a site photo becomes a reviewed decision.
               </h2>
             </div>
             <ActionLink href="/projects/demo/review">
-              Enter review workbench
+              Open the sample review
               <ArrowRight aria-hidden="true" size={17} strokeWidth={1.75} />
             </ActionLink>
           </div>

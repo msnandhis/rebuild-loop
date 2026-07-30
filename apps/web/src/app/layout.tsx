@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     template: "%s · ReBuild Loop",
   },
   description:
-    "Evidence-led pre-demolition material intelligence for safer reuse decisions.",
+    "Turn site photos into a human-reviewed materials list and recovery plan before demolition.",
 };
 
 export default function RootLayout({
