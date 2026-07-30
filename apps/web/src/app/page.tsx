@@ -6,6 +6,7 @@ import {
   FileCheck2,
   ScanLine,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { ActionLink, StatusTag } from "@rebuild/ui";
@@ -77,135 +78,35 @@ export default function HomePage() {
       <SiteHeader />
       <main id="main-content">
         <section className="overflow-hidden bg-paper">
-          <div className="mx-auto grid max-w-7xl gap-14 px-5 py-16 md:px-8 md:py-24 lg:grid-cols-[0.88fr_1.12fr] lg:items-center">
+          <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:px-8 md:py-16 lg:grid-cols-[0.82fr_1.18fr] lg:items-center">
             <div>
-              <div className="mb-6 flex items-center gap-3">
-                <span className="h-px w-10 bg-brand" />
-                <span className="font-mono text-xs font-medium tracking-[0.16em] text-action uppercase">
-                  Pre-demolition material intelligence
-                </span>
-              </div>
               <h1 className="max-w-2xl font-heading text-[2.5rem] leading-[1.08] font-bold tracking-[-0.045em] text-ink md:text-[3.5rem] md:leading-[1.1]">
-                Know what a building can become before it comes down.
+                Find reusable materials before demolition.
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-ink-muted">
-                ReBuild Loop turns site evidence into a human-approved materials
-                ledger, recovery plan, and traceable handover pack—before useful
-                assets become mixed waste.
+              <p className="mt-5 max-w-lg text-lg leading-8 text-ink-muted">
+                Capture the site, verify the findings, and approve a recovery
+                plan before work begins.
               </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-7">
                 <ActionLink href="/projects/demo/review">
-                  Review a demonstration
+                  Explore a sample project
                   <ArrowRight aria-hidden="true" size={17} strokeWidth={1.75} />
                 </ActionLink>
-                <ActionLink href="#how-it-works" tone="secondary">
-                  See how it works
-                </ActionLink>
               </div>
-              <p className="mt-5 max-w-lg text-sm leading-6 text-ink-muted">
-                Model proposals never approve their own findings. Named people
-                accept, correct, or block every consequential decision.
-              </p>
             </div>
 
-            <div className="relative lg:pl-6">
-              <div
-                aria-label="Example evidence register"
-                className="relative border border-rule-strong bg-paper shadow-sheet"
-                role="img"
-              >
-                <div className="flex items-center justify-between border-b border-rule bg-paper-subtle px-4 py-3">
-                  <div>
-                    <p className="font-mono text-[11px] font-medium tracking-[0.12em] text-ink-muted uppercase">
-                      Survey record / Zone B
-                    </p>
-                    <p className="mt-1 text-sm font-semibold">North workshop</p>
-                  </div>
-                  <StatusTag tone="attention">2 items need evidence</StatusTag>
-                </div>
-                <div className="ledger-grid relative aspect-[4/2.4] overflow-hidden bg-brand-light p-5 sm:p-8">
-                  <svg
-                    aria-hidden="true"
-                    className="h-full w-full text-ink"
-                    fill="none"
-                    viewBox="0 0 540 300"
-                  >
-                    <path
-                      d="M55 232V94l74-42 74 42v138M203 112h242v120H203M228 137h66v70h-66M320 137h98M320 165h98M320 193h98"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <path
-                      d="m54 95 75 43 74-43M129 138v94M90 177h77M90 203h77"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeDasharray="5 5"
-                    />
-                    <path
-                      d="M43 246h415"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <circle
-                      cx="269"
-                      cy="170"
-                      r="13"
-                      fill="#fff"
-                      stroke="#D00060"
-                      strokeWidth="3"
-                    />
-                    <text
-                      x="269"
-                      y="174"
-                      fill="#D00060"
-                      fontFamily="monospace"
-                      fontSize="11"
-                      fontWeight="700"
-                      textAnchor="middle"
-                    >
-                      14
-                    </text>
-                    <circle
-                      cx="370"
-                      cy="137"
-                      r="13"
-                      fill="#fff"
-                      stroke="#4C3A8A"
-                      strokeWidth="3"
-                    />
-                    <text
-                      x="370"
-                      y="141"
-                      fill="#4C3A8A"
-                      fontFamily="monospace"
-                      fontSize="11"
-                      fontWeight="700"
-                      textAnchor="middle"
-                    >
-                      21
-                    </text>
-                  </svg>
-                </div>
-                <div className="grid grid-cols-[auto_1fr_auto] items-center border-t border-rule px-4 py-3 text-xs">
-                  <span className="font-mono text-ink-muted">EVD-2407-B</span>
-                  <span className="mx-3 h-px bg-rule" />
-                  <span className="font-medium text-verified">
-                    Evidence indexed
-                  </span>
-                </div>
-              </div>
-              <div className="absolute -right-3 -bottom-5 hidden w-52 border border-rule bg-paper p-4 shadow-sheet sm:block">
-                <p className="font-mono text-[10px] tracking-[0.14em] text-evidence uppercase">
-                  Evidence note 14
-                </p>
-                <p className="mt-2 text-sm font-semibold">
-                  Steel primary frame
-                </p>
-                <p className="mt-1 text-xs leading-5 text-ink-muted">
-                  Section mark visible. Connection detail still required.
-                </p>
-              </div>
-            </div>
+            <figure className="overflow-hidden border border-rule bg-paper-subtle">
+              <Image
+                alt="A surveyor inspecting an industrial building beside reusable timber, bricks, steel, and a salvaged door."
+                className="aspect-[16/10] h-full w-full object-cover"
+                height={1024}
+                priority
+                sizes="(min-width: 1024px) 58vw, 100vw"
+                src="/images/material-survey-hero.webp"
+                unoptimized
+                width={1536}
+              />
+            </figure>
           </div>
         </section>
 

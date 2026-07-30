@@ -24,6 +24,13 @@ interface CandidateRow {
   specialist_review_required: boolean;
   subtype: string | null;
   unknowns: unknown;
+  latest_decision_action?: string | null;
+  latest_decision_at?: Date | null;
+}
+
+interface CandidateRevisionRow extends CandidateRow {
+  disposition: string;
+  previous_revision_id: string | null;
 }
 
 interface EvidenceRow {
@@ -54,7 +61,27 @@ export async function listCandidates(projectId: string, ownerUserId: string) {
       cr.preliminary_pathway,
       cr.quantity,
       cr.overall_confidence,
-      cr.created_at
+      cr.created_at,
+      (
+        select rd.action::text
+        from review_decisions rd
+        where rd.candidate_thread_id = cr.candidate_thread_id
+          and rd.candidate_revision_id = cr.id
+          and rd.project_id = cr.project_id
+          and rd.owner_user_id = cr.owner_user_id
+        order by rd.created_at desc
+        limit 1
+      ) as latest_decision_action,
+      (
+        select rd.created_at
+        from review_decisions rd
+        where rd.candidate_thread_id = cr.candidate_thread_id
+          and rd.candidate_revision_id = cr.id
+          and rd.project_id = cr.project_id
+          and rd.owner_user_id = cr.owner_user_id
+        order by rd.created_at desc
+        limit 1
+      ) as latest_decision_at
     from candidate_revisions cr
     where cr.project_id = ${projectId}::uuid
       and cr.owner_user_id = ${ownerUserId}
@@ -139,5 +166,30 @@ export async function findCandidate(
     }),
   );
 
-  return { candidate, evidence };
+  const revisions = await sql<CandidateRevisionRow[]>`
+    select
+      cr.candidate_thread_id,
+      cr.id as revision_id,
+      cr.revision_number,
+      cr.previous_revision_id,
+      cr.disposition,
+      cr.material_family,
+      cr.subtype,
+      cr.observation_summary,
+      cr.condition,
+      cr.unknowns,
+      cr.risk_flags,
+      cr.specialist_review_required,
+      cr.preliminary_pathway,
+      cr.quantity,
+      cr.overall_confidence,
+      cr.created_at
+    from candidate_revisions cr
+    where cr.candidate_thread_id = ${candidateThreadId}::uuid
+      and cr.project_id = ${projectId}::uuid
+      and cr.owner_user_id = ${ownerUserId}
+    order by cr.revision_number desc
+  `;
+
+  return { candidate, evidence, revisions };
 }

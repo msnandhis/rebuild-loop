@@ -21,9 +21,24 @@ export function SiteFooter() {
         </div>
       </div>
       <div className="border-t border-white/15">
-        <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-2 px-5 py-5 font-mono text-xs text-white/55 md:px-8">
-          <span>BUILD 0.1.0 / DEMONSTRATION</span>
-          <span>Not a certification or live marketplace</span>
+        <div className="mx-auto flex max-w-7xl flex-wrap justify-between gap-2 px-5 py-5 text-xs text-white/55 md:px-8">
+          <span>
+            Built by{" "}
+            <a
+              className="font-semibold text-white transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
+              href="https://msnandhis.com"
+              rel="noreferrer"
+              target="_blank"
+            >
+              Nandhis S
+            </a>
+          </span>
+          <span>
+            Built for{" "}
+            <strong className="font-semibold text-white">
+              AI Agent Builder
+            </strong>
+          </span>
         </div>
       </div>
     </footer>

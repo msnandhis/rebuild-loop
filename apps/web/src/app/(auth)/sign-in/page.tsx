@@ -14,15 +14,11 @@ export default async function SignInPage() {
 
   return (
     <>
-      <p className="font-mono text-xs font-medium tracking-[0.12em] text-action uppercase">
-        Project workspace
-      </p>
-      <h1 className="mt-3 font-heading text-3xl font-bold tracking-[-0.035em]">
-        Sign in to continue.
+      <h1 className="font-heading text-3xl font-bold tracking-[-0.035em]">
+        Welcome back
       </h1>
-      <p className="mt-3 mb-7 leading-7 text-ink-muted">
-        Open your project register and continue the next evidence or review
-        action.
+      <p className="mt-2 mb-6 text-sm text-ink-muted">
+        Sign in to your workspace.
       </p>
       <AuthForm mode="sign-in" />
     </>

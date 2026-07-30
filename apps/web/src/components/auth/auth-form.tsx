@@ -10,6 +10,9 @@ import { authClient } from "../../lib/auth-client";
 type AuthMode = "sign-in" | "sign-up";
 type AuthField = "confirm-password" | "email" | "name" | "password";
 
+const DEMO_EMAIL = "nandy@rebuildloop.com";
+const DEMO_PASSWORD = "nandy@rebuildloop.com";
+
 interface AuthFormProps {
   mode: AuthMode;
 }
@@ -27,8 +30,40 @@ export function AuthForm({ mode }: AuthFormProps) {
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registered, setRegistered] = useState(false);
+  const [isDemoSigningIn, setIsDemoSigningIn] = useState(false);
 
   const isSignUp = mode === "sign-up";
+  const authPending = isSubmitting || isDemoSigningIn;
+
+  async function handleDemoSignIn() {
+    setError(null);
+    setFieldErrors({});
+    setIsDemoSigningIn(true);
+
+    try {
+      const result = await authClient.signIn.email({
+        email: DEMO_EMAIL,
+        password: DEMO_PASSWORD,
+        rememberMe: true,
+      });
+
+      if (result.error) {
+        setError(
+          result.error.status === 429
+            ? "The demo account is temporarily rate-limited. Wait a minute, then try again."
+            : "The demo workspace is temporarily unavailable. Try again shortly.",
+        );
+        return;
+      }
+
+      router.replace("/projects");
+      router.refresh();
+    } catch {
+      setError("The demo workspace is temporarily unavailable. Try again.");
+    } finally {
+      setIsDemoSigningIn(false);
+    }
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -147,7 +182,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <form className="space-y-5" noValidate onSubmit={handleSubmit}>
+    <form className="space-y-4" noValidate onSubmit={handleSubmit}>
       {isSignUp && (
         <FormField
           autoComplete="name"
@@ -257,8 +292,8 @@ export function AuthForm({ mode }: AuthFormProps) {
       )}
 
       <button
-        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-action bg-action px-5 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        disabled={isSubmitting}
+        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-action bg-action px-5 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        disabled={authPending}
         type="submit"
       >
         {isSubmitting && (
@@ -271,6 +306,18 @@ export function AuthForm({ mode }: AuthFormProps) {
           : isSignUp
             ? "Create account"
             : "Sign in"}
+      </button>
+
+      <button
+        className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg border border-rule bg-paper px-5 text-sm font-semibold text-ink transition-colors hover:border-rule-strong hover:bg-paper-subtle disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+        disabled={authPending}
+        onClick={handleDemoSignIn}
+        type="button"
+      >
+        {isDemoSigningIn && (
+          <LoaderCircle aria-hidden="true" className="animate-spin" size={17} />
+        )}
+        {isDemoSigningIn ? "Opening demo…" : "Open demo workspace"}
       </button>
 
       <p className="text-center text-sm leading-6 text-ink-muted">

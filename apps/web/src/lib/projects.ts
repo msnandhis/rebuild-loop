@@ -2,6 +2,7 @@ import "server-only";
 
 import { analysisRuns, auditEvents, getDatabase, projects } from "@rebuild/db";
 import { and, desc, eq, inArray } from "drizzle-orm";
+import { cache } from "react";
 
 export async function listProjects(ownerUserId: string) {
   return getDatabase()
@@ -11,21 +12,25 @@ export async function listProjects(ownerUserId: string) {
     .orderBy(desc(projects.updatedAt));
 }
 
-export async function findOwnedProject(projectId: string, ownerUserId: string) {
-  if (!isUuid(projectId)) {
-    return null;
-  }
+// Cached per request so the project shell layout and the page it wraps share
+// one query instead of issuing the same lookup twice on every navigation.
+export const findOwnedProject = cache(
+  async (projectId: string, ownerUserId: string) => {
+    if (!isUuid(projectId)) {
+      return null;
+    }
 
-  const [project] = await getDatabase()
-    .select()
-    .from(projects)
-    .where(
-      and(eq(projects.id, projectId), eq(projects.ownerUserId, ownerUserId)),
-    )
-    .limit(1);
+    const [project] = await getDatabase()
+      .select()
+      .from(projects)
+      .where(
+        and(eq(projects.id, projectId), eq(projects.ownerUserId, ownerUserId)),
+      )
+      .limit(1);
 
-  return project ?? null;
-}
+    return project ?? null;
+  },
+);
 
 export async function findActiveProjectAnalysis(
   projectId: string,

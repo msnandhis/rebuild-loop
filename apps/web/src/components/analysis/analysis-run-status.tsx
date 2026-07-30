@@ -10,6 +10,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 type AnalysisStatus = "QUEUED" | "RUNNING" | "SUCCEEDED" | "FAILED";
@@ -60,10 +61,13 @@ export function AnalysisRunStatus({
   analysisId: string;
   projectId: string;
 }) {
+  const router = useRouter();
   const [analysis, setAnalysis] = useState<AnalysisRecord | null>(null);
   const [correlationId, setCorrelationId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [refreshVersion, setRefreshVersion] = useState(0);
+  const [retryError, setRetryError] = useState<string | null>(null);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   useEffect(() => {
     let stopped = false;
@@ -173,6 +177,39 @@ export function AnalysisRunStatus({
   const terminal =
     analysis.status === "SUCCEEDED" || analysis.status === "FAILED";
 
+  async function retry() {
+    setRetryError(null);
+    setIsRetrying(true);
+    try {
+      const response = await fetch(
+        `/api/v1/projects/${encodeURIComponent(projectId)}/analyses/${encodeURIComponent(analysisId)}/retry`,
+        {
+          credentials: "same-origin",
+          headers: { "Idempotency-Key": crypto.randomUUID() },
+          method: "POST",
+        },
+      );
+      const payload = (await response.json()) as {
+        analysisId?: string;
+        error?: { message?: string };
+      };
+      if (!response.ok || !payload.analysisId) {
+        throw new Error(
+          payload.error?.message ??
+            "Analysis could not be retried. The original run is retained.",
+        );
+      }
+      router.push(`/projects/${projectId}/analysis/${payload.analysisId}`);
+    } catch (error) {
+      setRetryError(
+        error instanceof Error
+          ? error.message
+          : "Analysis could not be retried. The original run is retained.",
+      );
+      setIsRetrying(false);
+    }
+  }
+
   return (
     <div className="border border-rule bg-paper">
       <div className="border-b border-rule px-5 py-5 md:px-6">
@@ -237,10 +274,38 @@ export function AnalysisRunStatus({
                 </p>
               )}
               {analysis.retryable && (
-                <p className="mt-3 text-sm leading-6 text-ink">
-                  The verified images are retained. Return to evidence to start
-                  a new analysis run.
-                </p>
+                <>
+                  <p className="mt-3 text-sm leading-6 text-ink">
+                    The verified images are retained. Retrying creates a new
+                    linked run and preserves this failure in the audit record.
+                  </p>
+                  <button
+                    className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-action bg-action px-4 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                    disabled={isRetrying}
+                    onClick={() => void retry()}
+                    type="button"
+                  >
+                    <RefreshCw
+                      aria-hidden="true"
+                      className={
+                        isRetrying
+                          ? "animate-spin motion-reduce:animate-none"
+                          : undefined
+                      }
+                      size={16}
+                      strokeWidth={1.75}
+                    />
+                    {isRetrying ? "Queuing new run…" : "Retry this analysis"}
+                  </button>
+                  {retryError && (
+                    <p
+                      className="mt-3 text-sm leading-6 text-blocked"
+                      role="alert"
+                    >
+                      {retryError}
+                    </p>
+                  )}
+                </>
               )}
             </div>
           </div>

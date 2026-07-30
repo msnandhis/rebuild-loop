@@ -36,7 +36,7 @@
   --brand-action: #d00060;
   --brand-black: #12131a;
   --brand-light: #f0faff;
-  --canvas: #f0faff;
+  --canvas: #f7f7f8;
   --paper: #ffffff;
   --paper-subtle: #f6f6f7;
   --paper-raised: #ffffff;
@@ -71,6 +71,13 @@ body {
   color: var(--ink);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
 }
 
 ::selection {

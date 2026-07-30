@@ -1,15 +1,21 @@
 /* eslint-disable @next/next/no-img-element */
-import { ArrowLeft, CircleAlert, FileCheck2, ShieldAlert } from "lucide-react";
+import { ArrowLeft, CircleAlert, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { StatusTag } from "@rebuild/ui";
 
+import { ClarificationTask } from "../../../../../../components/review/clarification-task";
+import { DecisionGate } from "../../../../../../components/review/decision-gate";
+import { RevisionHistory } from "../../../../../../components/review/revision-history";
+import { quietControl } from "../../../../../../components/workspace/controls";
 import {
   CandidateNotFoundError,
   findCandidate,
 } from "../../../../../../lib/candidates";
+import { listClarificationTasks } from "../../../../../../lib/clarifications";
 import { findOwnedProject } from "../../../../../../lib/projects";
+import { listReviewDecisions } from "../../../../../../lib/review-decisions";
 import { requireSession } from "../../../../../../lib/session";
 
 export default async function CandidateReviewPage({
@@ -35,49 +41,56 @@ export default async function CandidateReviewPage({
     throw error;
   }
 
-  const { candidate, evidence } = result;
+  const { candidate, evidence, revisions } = result;
+  const [decisions, clarifications] = await Promise.all([
+    listReviewDecisions(candidateId, projectId, session.user.id),
+    listClarificationTasks(candidateId, projectId, session.user.id),
+  ]);
+  const currentDecision = decisions.find(
+    (decision) => decision.candidate_revision_id === candidate.revision_id,
+  );
   const unknowns = toStringArray(candidate.unknowns);
   const riskFlags = toStringArray(candidate.risk_flags);
   const condition = toCondition(candidate.condition);
   const quantity = toQuantity(candidate.quantity);
 
   return (
-    <div className="mx-auto max-w-[1440px] px-5 py-8 md:px-8 md:py-12">
-      <Link
-        className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-ink-muted hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        href={`/projects/${projectId}/review`}
-      >
-        <ArrowLeft aria-hidden="true" size={16} />
-        Proposal queue
-      </Link>
-
-      <header className="mt-5 flex flex-col gap-4 border-y border-rule bg-paper px-5 py-5 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p className="font-mono text-xs text-ink-muted">
-            {project.code} / REVISION {candidate.revision_number}
-          </p>
-          <h1 className="mt-2 font-heading text-2xl font-bold md:text-3xl">
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+          <Link className={quietControl} href={`/projects/${projectId}/review`}>
+            <ArrowLeft aria-hidden="true" size={15} strokeWidth={1.75} />
+            Proposals
+          </Link>
+          <span aria-hidden="true" className="text-rule-strong">
+            /
+          </span>
+          <h2 className="text-[15px] font-semibold">
             {candidate.subtype ?? candidate.material_family}
-          </h1>
+          </h2>
+          <span className="font-mono text-[11px] text-ink-muted tabular-nums">
+            rev {String(candidate.revision_number).padStart(2, "0")}
+          </span>
         </div>
-        <StatusTag tone="neutral">Inspection available</StatusTag>
-      </header>
+        <StatusTag tone={currentDecision ? "verified" : "attention"}>
+          {currentDecision ? "Decision recorded" : "Decision required"}
+        </StatusTag>
+      </div>
 
-      <div className="mt-7 grid border border-rule bg-paper xl:grid-cols-[46fr_34fr_minmax(280px,20fr)]">
+      <div className="grid border border-rule bg-paper xl:grid-cols-[46fr_34fr_minmax(300px,20fr)]">
         <section
           aria-labelledby="evidence-heading"
           className="border-b border-rule xl:border-r xl:border-b-0"
         >
-          <div className="border-b border-rule px-5 py-4">
-            <p className="font-mono text-[11px] text-evidence">SOURCE LAYER</p>
-            <h2
-              className="mt-1 font-heading text-xl font-bold"
+          <div className="border-b border-rule px-4 py-2.5">
+            <h3
+              className="text-[13px] font-semibold text-evidence"
               id="evidence-heading"
             >
-              Supplied evidence
-            </h2>
+              Source evidence
+            </h3>
           </div>
-          <div className="space-y-6 p-5">
+          <div className="space-y-4 p-4">
             {evidence.map((item) => (
               <figure className="border border-rule" key={item.mediaAssetId}>
                 <div className="aspect-[4/3] overflow-hidden bg-paper-subtle">
@@ -90,18 +103,21 @@ export default async function CandidateReviewPage({
                     src={item.viewUrl}
                   />
                 </div>
-                <figcaption className="border-t border-rule px-4 py-3">
-                  <p className="font-mono text-[11px] text-evidence">
-                    EVIDENCE {item.ordinal + 1} /{" "}
-                    {item.mediaAssetId.slice(0, 8)}
-                  </p>
-                  <p className="mt-1 break-words text-xs font-semibold">
-                    {item.originalFilename}
+                <figcaption className="border-t border-rule px-3 py-2.5">
+                  <div className="flex flex-wrap items-baseline gap-x-2">
+                    <span className="font-mono text-[10px] text-evidence tabular-nums">
+                      E{String(item.ordinal + 1).padStart(2, "0")}
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-[12px] font-medium">
+                      {item.originalFilename}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-[13px] leading-5">
+                    {item.observation}
                   </p>
                   <p className="mt-1 font-mono text-[10px] text-ink-muted">
                     {formatLocator(item.locatorKind, item.locator)}
                   </p>
-                  <p className="mt-1 text-sm leading-6">{item.observation}</p>
                 </figcaption>
               </figure>
             ))}
@@ -112,142 +128,204 @@ export default async function CandidateReviewPage({
           aria-labelledby="proposal-heading"
           className="border-b border-rule xl:border-r xl:border-b-0"
         >
-          <div className="border-b border-rule px-5 py-4">
-            <p className="font-mono text-[11px] text-ink-muted">
-              MODEL PROPOSAL / GEMINI
-            </p>
-            <h2
-              className="mt-1 font-heading text-xl font-bold"
-              id="proposal-heading"
-            >
-              Preliminary observation
-            </h2>
+          <div className="flex items-center justify-between gap-2 border-b border-rule px-4 py-2.5">
+            <h3 className="text-[13px] font-semibold" id="proposal-heading">
+              Model proposal
+            </h3>
+            <span className="font-mono text-[10px] text-ink-muted">
+              GEMINI · PRELIMINARY
+            </span>
           </div>
-          <div className="space-y-6 p-5">
-            <div>
-              <h3 className="text-sm font-semibold text-ink-muted">
-                Visible observation
-              </h3>
-              <p className="mt-2 leading-7">{candidate.observation_summary}</p>
-            </div>
-            <div className="border-l-4 border-attention bg-attention-wash px-4 py-3">
-              <h3 className="flex items-center gap-2 text-sm font-bold text-attention">
-                <CircleAlert aria-hidden="true" size={17} />
-                Unknowns
-              </h3>
+          <div className="space-y-4 p-4">
+            <p className="text-sm leading-6">{candidate.observation_summary}</p>
+
+            <div className="border-l-2 border-attention bg-attention-wash px-3 py-2.5">
+              <h4 className="flex items-center gap-1.5 text-[12px] font-semibold text-attention">
+                <CircleAlert aria-hidden="true" size={14} strokeWidth={1.75} />
+                {unknowns.length
+                  ? `${unknowns.length} unknown${unknowns.length === 1 ? "" : "s"}`
+                  : "No unknowns recorded"}
+              </h4>
               {unknowns.length ? (
-                <ul className="mt-2 list-disc space-y-2 pl-5 text-sm leading-6">
+                <ul className="mt-1.5 space-y-1 text-[13px] leading-5">
                   {unknowns.map((unknown) => (
                     <li key={unknown}>{unknown}</li>
                   ))}
                 </ul>
-              ) : (
-                <p className="mt-2 text-sm">No unknown was recorded.</p>
-              )}
+              ) : null}
             </div>
+
             {riskFlags.length > 0 && !riskFlags.includes("NONE") ? (
-              <div className="border-l-4 border-blocked bg-blocked-wash px-4 py-3">
-                <h3 className="flex items-center gap-2 text-sm font-bold text-blocked">
-                  <ShieldAlert aria-hidden="true" size={17} />
-                  Risk and specialist flags
-                </h3>
-                <p className="mt-2 text-sm leading-6">
+              <div className="border-l-2 border-blocked bg-blocked-wash px-3 py-2.5">
+                <h4 className="flex items-center gap-1.5 text-[12px] font-semibold text-blocked">
+                  <ShieldAlert
+                    aria-hidden="true"
+                    size={14}
+                    strokeWidth={1.75}
+                  />
+                  Risk flags
+                </h4>
+                <p className="mt-1.5 text-[13px] leading-5">
                   {riskFlags.map(humanize).join(" · ")}
                 </p>
               </div>
             ) : null}
-            <dl className="grid gap-3 border-t border-rule pt-5 text-sm sm:grid-cols-2 xl:grid-cols-1">
-              <div>
-                <dt className="text-ink-muted">Material family</dt>
-                <dd className="mt-1 font-semibold">
-                  {humanize(candidate.material_family)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-ink-muted">Preliminary pathway</dt>
-                <dd className="mt-1 font-semibold">
-                  {humanize(candidate.preliminary_pathway)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-ink-muted">Visible condition</dt>
-                <dd className="mt-1 font-semibold">
-                  {condition
-                    ? `${humanize(condition.grade)} · ${confidenceLabel(condition.confidence)} model confidence`
-                    : "Not recorded"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-ink-muted">Quantity estimate</dt>
-                <dd className="mt-1 font-semibold">
-                  {quantity
+
+            <dl className="divide-y divide-rule border-t border-rule">
+              <SpecRow
+                label="Material family"
+                value={humanize(candidate.material_family)}
+              />
+              <SpecRow
+                label="Preliminary pathway"
+                value={humanize(candidate.preliminary_pathway)}
+              />
+              <SpecRow
+                label="Condition"
+                note={
+                  condition
+                    ? `${confidenceLabel(condition.confidence)} model confidence`
+                    : undefined
+                }
+                value={condition ? humanize(condition.grade) : "Not recorded"}
+              />
+              <SpecRow
+                label="Quantity"
+                mono={Boolean(quantity)}
+                note={
+                  quantity
+                    ? `${quantity.basis} · ${confidenceLabel(quantity.confidence)} model confidence`
+                    : undefined
+                }
+                value={
+                  quantity
                     ? formatQuantity(
                         quantity.minimum,
                         quantity.maximum,
                         quantity.unit,
                       )
-                    : "Not recorded"}
-                </dd>
-                {quantity && (
-                  <p className="mt-1 text-xs leading-5 text-ink-muted">
-                    Basis: {quantity.basis} ·{" "}
-                    {confidenceLabel(quantity.confidence)} model confidence
-                  </p>
-                )}
-              </div>
-              <div>
-                <dt className="text-ink-muted">Proposal confidence</dt>
-                <dd className="mt-1 font-semibold">
-                  {confidenceLabel(candidate.overall_confidence)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-ink-muted">Specialist review</dt>
-                <dd className="mt-1 font-semibold">
-                  {candidate.specialist_review_required
+                    : "Not recorded"
+                }
+              />
+              <SpecRow
+                label="Overall confidence"
+                value={confidenceLabel(candidate.overall_confidence)}
+              />
+              <SpecRow
+                label="Specialist review"
+                value={
+                  candidate.specialist_review_required
                     ? "Required before a decision"
-                    : "Not explicitly requested by the model"}
-                </dd>
-              </div>
+                    : "Not requested"
+                }
+              />
             </dl>
           </div>
         </section>
 
         <aside aria-labelledby="decision-heading" className="bg-brand-wash/40">
-          <div className="border-b border-rule px-5 py-4">
-            <p className="font-mono text-[11px] text-action">HUMAN LAYER</p>
-            <h2
-              className="mt-1 font-heading text-xl font-bold"
+          <div className="border-b border-rule px-4 py-2.5">
+            <h3
+              className="text-[13px] font-semibold text-action"
               id="decision-heading"
             >
-              Decision recording
-            </h2>
+              Your decision
+            </h3>
           </div>
-          <div className="p-5">
-            <div className="border border-action bg-paper px-4 py-4">
-              <FileCheck2
-                aria-hidden="true"
-                className="text-action"
-                size={22}
-              />
-              <h3 className="mt-3 font-heading text-lg font-bold">
-                Decision recording is not yet available.
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-ink-muted">
-                Evidence and proposal remain separate. This model output is not
-                an approval, certification, or reuse decision; this screen is
-                inspection-only in the current build.
-              </p>
+          <DecisionGate
+            candidate={{
+              materialFamily: candidate.material_family,
+              observationSummary: candidate.observation_summary,
+              preliminaryPathway: candidate.preliminary_pathway,
+              revisionId: candidate.revision_id,
+              subtype: candidate.subtype,
+            }}
+            currentDecision={
+              currentDecision
+                ? {
+                    action: currentDecision.action,
+                    createdAt: toIsoString(currentDecision.created_at),
+                    reason: currentDecision.reason ?? "",
+                  }
+                : null
+            }
+            projectId={projectId}
+            threadId={candidateId}
+          />
+          {clarifications.length > 0 && (
+            <div className="space-y-3 border-t border-rule p-4">
+              <h4 className="text-[13px] font-semibold">Evidence requests</h4>
+              {clarifications.map((task) => (
+                <ClarificationTask
+                  instruction={task.instruction}
+                  key={task.id}
+                  projectId={projectId}
+                  rationale={task.rationale}
+                  requiredEvidence={task.required_evidence}
+                  status={task.status}
+                  taskId={task.id}
+                />
+              ))}
             </div>
-            <Link
-              className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-action px-5 text-sm font-semibold text-action hover:bg-brand-wash"
-              href={`/projects/${projectId}/review`}
-            >
-              Return to queue
-            </Link>
-          </div>
+          )}
         </aside>
       </div>
+
+      <RevisionHistory
+        revisions={revisions.map((revision) => ({
+          condition: revision.condition,
+          createdAt: toIsoString(revision.created_at),
+          disposition: revision.disposition,
+          materialFamily: revision.material_family,
+          observationSummary: revision.observation_summary,
+          overallConfidence: revision.overall_confidence,
+          preliminaryPathway: revision.preliminary_pathway,
+          quantity: revision.quantity,
+          revisionId: revision.revision_id,
+          revisionNumber: revision.revision_number,
+          riskFlags: revision.risk_flags,
+          specialistReviewRequired: Boolean(
+            revision.specialist_review_required,
+          ),
+          subtype: revision.subtype,
+          unknowns: revision.unknowns,
+        }))}
+      />
+    </div>
+  );
+}
+
+/** A label/value pair in the proposal specification list. */
+function SpecRow({
+  label,
+  mono = false,
+  note,
+  value,
+}: {
+  label: string;
+  mono?: boolean;
+  note?: string | undefined;
+  value: string;
+}) {
+  return (
+    <div className="grid grid-cols-[minmax(0,120px)_minmax(0,1fr)] gap-3 py-2">
+      <dt className="text-[12px] text-ink-muted">{label}</dt>
+      <dd>
+        <span
+          className={
+            mono
+              ? "font-mono text-[13px] font-medium tabular-nums"
+              : "text-[13px] font-medium"
+          }
+        >
+          {value}
+        </span>
+        {note ? (
+          <span className="mt-0.5 block text-[11px] leading-4 text-ink-muted">
+            {note}
+          </span>
+        ) : null}
+      </dd>
     </div>
   );
 }
@@ -256,6 +334,10 @@ function toStringArray(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((item): item is string => typeof item === "string")
     : [];
+}
+
+function toIsoString(value: Date | string): string {
+  return value instanceof Date ? value.toISOString() : value;
 }
 
 function humanize(value: string): string {

@@ -69,7 +69,15 @@ Implemented routes:
 
 - `/` — evidence-led product introduction
 - `/method` — method, responsibility, and limitations
-- `/projects/demo/review` — interactive three-part review workbench
+- `/sign-up` and `/sign-in` — open email/password access without email verification
+- `/projects` and `/projects/new` — project workspace and intake
+- `/projects/:id/capture` — evidence upload and Gemini analysis launch
+- `/projects/:id/review` — candidate queue with revision-aware human decisions
+- `/projects/:id/ledger` — confirmed, append-only recovery inventory
+- `/projects/:id/routes` — deterministic reuse, recycle, and specialist pathways
+- `/projects/:id/pack` — draft, approval, and print-ready recovery plan
+- `/projects/:id/audit` — human and agent decision history
+- `/projects/demo/review` — read-only demonstration workbench
 - `/api/health/live` and `/api/health/ready` — container health probes
 
 Quality checks:

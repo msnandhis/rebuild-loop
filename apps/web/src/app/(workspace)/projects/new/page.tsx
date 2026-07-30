@@ -6,17 +6,13 @@ export const metadata = {
 
 export default function NewProjectPage() {
   return (
-    <div className="mx-auto max-w-[960px] px-5 py-10 md:px-8 md:py-14">
-      <div className="border-b border-rule pb-7">
-        <p className="font-mono text-xs font-medium tracking-[0.12em] text-action uppercase">
-          Site brief / New record
-        </p>
-        <h1 className="mt-2 font-heading text-3xl font-bold tracking-[-0.035em] md:text-4xl">
-          Create a project.
+    <div className="mx-auto max-w-[880px] px-5 py-8 md:px-8 md:py-10">
+      <div className="mb-6">
+        <h1 className="font-heading text-2xl font-bold tracking-[-0.025em]">
+          New project
         </h1>
-        <p className="mt-3 max-w-2xl leading-7 text-ink-muted">
-          Start with the minimum site context. Evidence capture and material
-          decisions remain separate, traceable stages.
+        <p className="mt-1 text-sm text-ink-muted">
+          Add the basic site details.
         </p>
       </div>
       <NewProjectForm submissionToken={crypto.randomUUID()} />
