@@ -8,6 +8,7 @@ import { primaryControl } from "../../../../../components/workspace/controls";
 import { EmptyState } from "../../../../../components/workspace/empty-state";
 import { LimitationNote } from "../../../../../components/workspace/limitation-note";
 import { Panel } from "../../../../../components/workspace/panel";
+import { findLatestProjectAnalysis } from "../../../../../lib/analyses";
 import { listCandidates } from "../../../../../lib/candidates";
 import { findOwnedProject } from "../../../../../lib/projects";
 import { requireSession } from "../../../../../lib/session";
@@ -25,7 +26,10 @@ export default async function ReviewQueuePage({
     notFound();
   }
 
-  const candidates = await listCandidates(projectId, session.user.id);
+  const [candidates, latestAnalysis] = await Promise.all([
+    listCandidates(projectId, session.user.id),
+    findLatestProjectAnalysis(projectId, session.user.id),
+  ]);
   const undecided = candidates.filter(
     (candidate) => !candidate.latest_decision_action,
   ).length;
@@ -97,11 +101,18 @@ export default async function ReviewQueuePage({
                 className={primaryControl}
                 href={`/projects/${projectId}/capture`}
               >
-                Add evidence
+                {latestAnalysis?.status === "SUCCEEDED"
+                  ? "Add clearer evidence"
+                  : "Add evidence"}
               </Link>
             }
           >
-            No proposals yet. Add site evidence and complete an analysis run.
+            {latestAnalysis?.status === "SUCCEEDED"
+              ? "Analysis completed, but the selected images did not support a material proposal."
+              : latestAnalysis?.status === "QUEUED" ||
+                  latestAnalysis?.status === "RUNNING"
+                ? "Analysis is still running. Proposals will appear here when the result is ready."
+                : "No proposals yet. Add site evidence and complete an analysis run."}
           </EmptyState>
         )}
       </Panel>
