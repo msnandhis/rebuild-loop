@@ -14,15 +14,11 @@ export default async function SignUpPage() {
 
   return (
     <>
-      <p className="font-mono text-xs font-medium tracking-[0.12em] text-action uppercase">
-        Open registration
-      </p>
-      <h1 className="mt-3 font-heading text-3xl font-bold tracking-[-0.035em]">
-        Create your project register.
+      <h1 className="font-heading text-3xl font-bold tracking-[-0.035em]">
+        Create an account
       </h1>
-      <p className="mt-3 mb-7 leading-7 text-ink-muted">
-        No email verification is required. Your name is recorded with future
-        project decisions.
+      <p className="mt-2 mb-6 text-sm text-ink-muted">
+        No email verification required.
       </p>
       <AuthForm mode="sign-up" />
     </>

@@ -1,9 +1,13 @@
-import { ArrowLeft, ArrowRight, FileSearch } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { StatusTag } from "@rebuild/ui";
 
+import { primaryControl } from "../../../../../components/workspace/controls";
+import { EmptyState } from "../../../../../components/workspace/empty-state";
+import { LimitationNote } from "../../../../../components/workspace/limitation-note";
+import { Panel } from "../../../../../components/workspace/panel";
 import { listCandidates } from "../../../../../lib/candidates";
 import { findOwnedProject } from "../../../../../lib/projects";
 import { requireSession } from "../../../../../lib/session";
@@ -22,108 +26,111 @@ export default async function ReviewQueuePage({
   }
 
   const candidates = await listCandidates(projectId, session.user.id);
+  const undecided = candidates.filter(
+    (candidate) => !candidate.latest_decision_action,
+  ).length;
 
   return (
-    <div className="mx-auto max-w-[1120px] px-5 py-8 md:px-8 md:py-12">
-      <Link
-        className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-ink-muted transition-colors hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-        href={`/projects/${project.id}`}
+    <div className="space-y-4">
+      <Panel
+        status={
+          candidates.length ? (
+            <StatusTag tone={undecided ? "attention" : "verified"}>
+              {undecided ? `${undecided} awaiting decision` : "All decided"}
+            </StatusTag>
+          ) : null
+        }
+        title="Model proposals"
+        titleId="proposals"
       >
-        <ArrowLeft aria-hidden="true" size={16} strokeWidth={1.75} />
-        Project overview
-      </Link>
-
-      <header className="mt-5 border-b border-rule pb-7">
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="font-mono text-xs text-ink-muted">
-            {project.code} / REVIEW
-          </span>
-          <StatusTag tone={candidates.length ? "attention" : "neutral"}>
-            {candidates.length
-              ? `${candidates.length} available to inspect`
-              : "No proposals"}
-          </StatusTag>
-        </div>
-        <h1 className="mt-3 font-heading text-3xl font-bold tracking-[-0.035em] md:text-4xl">
-          Inspect model proposals.
-        </h1>
-        <p className="mt-3 max-w-2xl leading-7 text-ink-muted">
-          Each row is preliminary. Open a proposal to inspect the source
-          evidence and unresolved questions before any human decision.
-        </p>
-      </header>
-
-      {candidates.length ? (
-        <section className="mt-7 border border-rule bg-paper">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] border-b border-rule px-5 py-3 font-mono text-[11px] tracking-[0.08em] text-ink-muted uppercase md:grid-cols-[120px_minmax(0,1fr)_210px_auto]">
-            <span className="hidden md:block">Candidate</span>
-            <span>Proposal</span>
-            <span className="hidden md:block">Uncertainty</span>
-            <span>Action</span>
-          </div>
+        {candidates.length ? (
           <ol className="divide-y divide-rule">
             {candidates.map((candidate) => {
               const unknowns = toStringArray(candidate.unknowns);
+              const decision = candidate.latest_decision_action;
+
               return (
-                <li
-                  className="grid gap-3 px-5 py-5 md:grid-cols-[120px_minmax(0,1fr)_210px_auto] md:items-center"
-                  key={candidate.candidate_thread_id}
-                >
-                  <span className="font-mono text-xs text-ink-muted">
-                    MAT-
-                    {candidate.candidate_thread_id.slice(0, 8).toUpperCase()}
-                  </span>
-                  <div>
-                    <h2 className="font-heading text-lg font-bold">
-                      {candidate.subtype ?? candidate.material_family}
-                    </h2>
-                    <p className="mt-1 text-sm leading-6 text-ink-muted">
-                      {candidate.observation_summary}
-                    </p>
-                  </div>
-                  <p className="text-sm leading-6 text-ink-muted">
-                    {unknowns[0] ?? "No unknown was recorded."}
-                  </p>
+                <li key={candidate.candidate_thread_id}>
                   <Link
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-action px-4 text-sm font-semibold text-action transition-colors hover:bg-brand-wash focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                    className="group grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 px-4 py-3.5 transition-colors duration-150 hover:bg-paper-subtle focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-focus md:grid-cols-[96px_minmax(0,1fr)_minmax(0,0.8fr)_120px_20px]"
                     href={`/projects/${projectId}/review/${candidate.candidate_thread_id}`}
                   >
-                    Inspect proposal
-                    <ArrowRight aria-hidden="true" size={16} />
+                    <span className="order-2 font-mono text-[11px] text-ink-muted md:order-none">
+                      MAT-
+                      {candidate.candidate_thread_id.slice(0, 6).toUpperCase()}
+                    </span>
+                    <span className="order-1 text-sm font-semibold md:order-none">
+                      {candidate.subtype ?? candidate.material_family}
+                    </span>
+                    <span className="order-3 line-clamp-2 text-[13px] leading-5 text-ink-muted md:order-none">
+                      {candidate.observation_summary}
+                    </span>
+                    <span className="order-4 md:order-none">
+                      {decision ? (
+                        <StatusTag tone={decisionTone(decision)}>
+                          {humanize(decision)}
+                        </StatusTag>
+                      ) : unknowns.length ? (
+                        <StatusTag tone="attention">
+                          {unknowns.length} unknown
+                          {unknowns.length === 1 ? "" : "s"}
+                        </StatusTag>
+                      ) : (
+                        <StatusTag>No decision</StatusTag>
+                      )}
+                    </span>
+                    <ChevronRight
+                      aria-hidden="true"
+                      className="order-5 hidden shrink-0 text-ink-muted transition-colors duration-150 group-hover:text-action md:order-none md:block"
+                      size={16}
+                      strokeWidth={1.75}
+                    />
                   </Link>
                 </li>
               );
             })}
           </ol>
-        </section>
-      ) : (
-        <section className="mt-7 border border-rule bg-paper px-6 py-12 text-center">
-          <FileSearch
-            aria-hidden="true"
-            className="mx-auto text-ink-muted"
-            size={32}
-            strokeWidth={1.5}
-          />
-          <h2 className="mt-4 font-heading text-xl font-bold">
-            No model proposals yet.
-          </h2>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-ink-muted">
-            Add verified evidence and complete an analysis run before review.
-          </p>
-          <Link
-            className="mt-5 inline-flex min-h-11 items-center justify-center rounded-full border border-action bg-action px-5 text-sm font-semibold text-white hover:bg-ink"
-            href={`/projects/${projectId}/capture`}
+        ) : (
+          <EmptyState
+            action={
+              <Link
+                className={primaryControl}
+                href={`/projects/${projectId}/capture`}
+              >
+                Add evidence
+              </Link>
+            }
           >
-            Add evidence
-          </Link>
-        </section>
-      )}
+            No proposals yet. Add site evidence and complete an analysis run.
+          </EmptyState>
+        )}
+      </Panel>
+
+      <LimitationNote>
+        Every row is a preliminary model proposal, not a finding. Open one to
+        inspect its source evidence and unresolved questions; nothing reaches
+        the materials ledger until you accept or correct it.
+      </LimitationNote>
     </div>
   );
+}
+
+function decisionTone(action: string) {
+  if (action === "CONFIRMED" || action === "CORRECTED") return "verified";
+  if (action === "SPECIALIST_REVIEW") return "blocked";
+  return "attention";
 }
 
 function toStringArray(value: unknown): string[] {
   return Array.isArray(value)
     ? value.filter((item): item is string => typeof item === "string")
     : [];
+}
+
+function humanize(value: string): string {
+  return value
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }

@@ -19,7 +19,7 @@
     "db:generate": "drizzle-kit generate --config drizzle.config.ts",
     "db:migrate": "tsx src/migrate.ts",
     "lint": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run src",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

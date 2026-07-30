@@ -3,18 +3,19 @@
 import {
   AlertCircle,
   Camera,
-  CheckCircle2,
   FileImage,
   ImagePlus,
   LoaderCircle,
   RefreshCw,
   Trash2,
-  UploadCloud,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { type ChangeEvent, useEffect, useRef, useState } from "react";
 
+import { primaryControl, secondaryControl } from "../workspace/controls";
+import { EmptyState } from "../workspace/empty-state";
+import { Panel } from "../workspace/panel";
 import { AnalysisClientError, startProjectAnalysis } from "./analysis-client";
 import {
   completeProjectUpload,
@@ -329,34 +330,37 @@ export function CaptureManifest({ projectId }: { projectId: string }) {
     }
   }
 
-  return (
-    <section aria-labelledby="manifest-title" className="space-y-5">
-      <div className="border border-rule bg-paper">
-        <div className="border-b border-rule px-5 py-4 md:px-6">
-          <p className="font-mono text-[11px] font-medium tracking-[0.1em] text-evidence uppercase">
-            Capture manifest / Initial survey
-          </p>
-          <div className="mt-2 flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <h2
-                className="font-heading text-xl font-semibold"
-                id="manifest-title"
-              >
-                Add site images
-              </h2>
-              <p className="mt-1 text-sm leading-6 text-ink-muted">
-                Each file is verified before it can be included in analysis.
-              </p>
-            </div>
-            <p className="font-mono text-xs text-ink-muted">
-              {readyCount} ready · {activeCount} processing · {availableSlots}{" "}
-              slots open
-            </p>
-          </div>
-        </div>
+  const itemCount = media.length + uploads.length;
 
-        <div className="p-5 md:p-6">
-          <div className="grid gap-3 sm:grid-cols-2">
+  return (
+    <>
+      <Panel
+        actions={
+          <button
+            aria-label="Refresh evidence status"
+            className="inline-flex size-9 items-center justify-center rounded-lg text-ink-muted transition-colors duration-150 hover:bg-paper-subtle hover:text-ink disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            disabled={isLoadingMedia}
+            onClick={() => void refreshMedia()}
+            type="button"
+          >
+            <RefreshCw
+              aria-hidden="true"
+              className={
+                isLoadingMedia
+                  ? "animate-spin motion-reduce:animate-none"
+                  : undefined
+              }
+              size={16}
+              strokeWidth={1.75}
+            />
+          </button>
+        }
+        meta={`${readyCount} ready · ${activeCount} processing · ${availableSlots} of ${MAX_FILES} slots open`}
+        title="Site images"
+        titleId="manifest-title"
+      >
+        <div className="border-b border-rule p-4">
+          <div className="grid gap-2 sm:grid-cols-2">
             <UploadButton
               capture
               disabled={uploadControlsDisabled}
@@ -372,94 +376,59 @@ export function CaptureManifest({ projectId }: { projectId: string }) {
               onChange={handleFiles}
             />
           </div>
-          <p className="mt-3 text-xs leading-5 text-ink-muted">
-            JPEG, PNG, or WebP · 10 MB each · six project images in this build
+          <p className="mt-2 text-[12px] text-ink-muted">
+            JPEG, PNG or WebP · 10 MB max
           </p>
 
           {selectionError && (
-            <div
-              className="mt-4 border-l-4 border-blocked bg-blocked-wash px-4 py-3 text-sm leading-6 text-blocked"
+            <p
+              className="mt-3 border-l-2 border-blocked bg-blocked-wash px-3 py-2 text-[13px] leading-5 text-blocked"
               role="alert"
             >
               {selectionError}
-            </div>
+            </p>
           )}
-        </div>
-      </div>
-
-      <div className="border border-rule bg-paper">
-        <div className="flex items-center justify-between gap-3 border-b border-rule px-5 py-4 md:px-6">
-          <h2 className="font-heading text-lg font-semibold">
-            Evidence in this project
-          </h2>
-          <button
-            aria-label="Refresh evidence status"
-            className="inline-flex size-11 items-center justify-center rounded-md text-ink-muted transition-colors hover:bg-paper-subtle hover:text-action disabled:cursor-wait disabled:opacity-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-            disabled={isLoadingMedia}
-            onClick={() => void refreshMedia()}
-            type="button"
-          >
-            <RefreshCw
-              aria-hidden="true"
-              className={
-                isLoadingMedia
-                  ? "animate-spin motion-reduce:animate-none"
-                  : undefined
-              }
-              size={18}
-              strokeWidth={1.75}
-            />
-          </button>
         </div>
 
         {manifestError && (
           <div
-            className="m-5 flex items-start gap-3 border-l-4 border-blocked bg-blocked-wash px-4 py-3 text-sm leading-6 text-blocked md:m-6"
+            className="flex items-start gap-2 border-b border-rule bg-blocked-wash px-4 py-2.5 text-[13px] leading-5 text-blocked"
             role="alert"
           >
             <AlertCircle
               aria-hidden="true"
               className="mt-0.5 shrink-0"
-              size={18}
+              size={15}
             />
             <div>
-              <p>{manifestError}</p>
+              {manifestError}{" "}
               <button
-                className="mt-2 min-h-11 font-semibold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                className="font-semibold underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
                 onClick={() => void refreshMedia()}
                 type="button"
               >
-                Try loading evidence again
+                Try again
               </button>
             </div>
           </div>
         )}
 
-        {isLoadingMedia && media.length === 0 && uploads.length === 0 ? (
-          <div
+        {isLoadingMedia && itemCount === 0 ? (
+          <p
             aria-live="polite"
-            className="flex min-h-32 items-center justify-center gap-3 px-5 text-sm text-ink-muted"
+            className="flex items-center gap-2 px-4 py-6 text-sm text-ink-muted"
           >
             <LoaderCircle
               aria-hidden="true"
               className="animate-spin motion-reduce:animate-none"
-              size={18}
+              size={15}
             />
             Loading evidence…
-          </div>
-        ) : media.length === 0 && uploads.length === 0 ? (
-          <div className="px-5 py-9 text-center md:px-6">
-            <UploadCloud
-              aria-hidden="true"
-              className="mx-auto text-ink-muted"
-              size={25}
-              strokeWidth={1.5}
-            />
-            <p className="mt-3 font-semibold">No evidence added yet.</p>
-            <p className="mt-1 text-sm leading-6 text-ink-muted">
-              Start with one clear overview, then add close-ups or labels.
-            </p>
-          </div>
+          </p>
+        ) : itemCount === 0 ? (
+          <EmptyState>
+            Add a wide view first, then the details that support a decision.
+          </EmptyState>
         ) : (
           <ol className="divide-y divide-rule">
             {media.map((item) => (
@@ -475,65 +444,59 @@ export function CaptureManifest({ projectId }: { projectId: string }) {
             ))}
           </ol>
         )}
-      </div>
 
-      {readyCount > 0 && (
-        <div className="border border-verified/30 bg-verified-wash p-4">
-          <div className="flex items-start gap-3 text-sm text-verified">
-            <CheckCircle2
-              aria-hidden="true"
-              className="mt-0.5 shrink-0"
-              size={19}
-              strokeWidth={1.75}
-            />
-            <p>
-              <span className="font-semibold">
-                {readyCount} {readyCount === 1 ? "image is" : "images are"}{" "}
-                ready.
-              </span>{" "}
-              {activeCount > 0
-                ? `Wait for ${activeCount} remaining ${activeCount === 1 ? "upload" : "uploads"} before starting.`
-                : "Start a durable analysis when this evidence set is complete."}
-            </p>
-          </div>
-          <button
-            className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-action bg-action px-5 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink disabled:cursor-wait disabled:opacity-60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:w-auto"
-            disabled={activeCount > 0 || isStartingAnalysis}
-            onClick={() => void startAnalysis()}
-            type="button"
-          >
-            {isStartingAnalysis && (
-              <LoaderCircle
-                aria-hidden="true"
-                className="animate-spin motion-reduce:animate-none"
-                size={17}
-              />
-            )}
-            {isStartingAnalysis
-              ? "Starting analysis…"
-              : `Analyse ${readyCount} ready ${readyCount === 1 ? "image" : "images"}`}
-          </button>
-          {analysisError && (
-            <div
-              className="mt-4 border-l-4 border-blocked bg-blocked-wash px-4 py-3 text-sm leading-6 text-blocked"
-              role="alert"
-            >
-              <p>{analysisError.message}</p>
-              {analysisError.correlationId && (
-                <p className="mt-1 font-mono text-[11px]">
-                  Reference {analysisError.correlationId}
-                </p>
-              )}
+        {readyCount > 0 && (
+          <div className="border-t border-rule bg-paper-subtle px-4 py-3">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="text-[13px]">
+                <span className="font-semibold">
+                  {readyCount} {readyCount === 1 ? "image" : "images"} ready
+                </span>
+                {activeCount > 0 ? (
+                  <span className="text-ink-muted">
+                    {" · "}
+                    {activeCount} still processing
+                  </span>
+                ) : null}
+              </p>
+              <button
+                className={`${primaryControl} disabled:cursor-wait disabled:opacity-60`}
+                disabled={activeCount > 0 || isStartingAnalysis}
+                onClick={() => void startAnalysis()}
+                type="button"
+              >
+                {isStartingAnalysis && (
+                  <LoaderCircle
+                    aria-hidden="true"
+                    className="animate-spin motion-reduce:animate-none"
+                    size={15}
+                  />
+                )}
+                {isStartingAnalysis ? "Starting…" : "Start analysis"}
+              </button>
             </div>
-          )}
-        </div>
-      )}
+            {analysisError && (
+              <p
+                className="mt-2 border-l-2 border-blocked bg-blocked-wash px-3 py-2 text-[13px] leading-5 text-blocked"
+                role="alert"
+              >
+                {analysisError.message}
+                {analysisError.correlationId && (
+                  <span className="mt-0.5 block font-mono text-[11px]">
+                    Reference {analysisError.correlationId}
+                  </span>
+                )}
+              </p>
+            )}
+          </div>
+        )}
+      </Panel>
       <p aria-live="polite" className="sr-only">
         {activeCount > 0
           ? `${activeCount} ${activeCount === 1 ? "upload is" : "uploads are"} processing.`
           : `${readyCount} ${readyCount === 1 ? "image is" : "images are"} ready for analysis.`}
       </p>
-    </section>
+    </>
   );
 }
 
@@ -554,13 +517,13 @@ function UploadButton({
 }) {
   return (
     <label
-      className={`inline-flex min-h-12 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold transition-colors focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus ${
+      className={`${secondaryControl} focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus ${
         disabled
-          ? "cursor-not-allowed border-rule bg-paper-subtle text-ink-muted opacity-60"
-          : "cursor-pointer border-action bg-paper text-action hover:bg-brand-wash"
+          ? "cursor-not-allowed border-rule bg-paper-subtle text-ink-muted"
+          : "cursor-pointer"
       }`}
     >
-      <Icon aria-hidden="true" size={18} strokeWidth={1.75} />
+      <Icon aria-hidden="true" size={16} strokeWidth={1.75} />
       {label}
       <input
         accept="image/jpeg,image/png,image/webp"
@@ -579,28 +542,24 @@ function ServerMediaRow({ item }: { item: MediaItem }) {
   const status = getServerStatus(item);
 
   return (
-    <li className="grid grid-cols-[64px_minmax(0,1fr)] gap-4 px-5 py-4 md:grid-cols-[72px_minmax(0,1fr)_auto] md:items-center md:px-6">
-      <div className="flex aspect-square items-center justify-center rounded-md border border-rule bg-paper-subtle text-ink-muted">
-        <FileImage aria-hidden="true" size={22} strokeWidth={1.5} />
+    <li className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">
+      <div className="flex size-10 items-center justify-center rounded border border-rule bg-paper-subtle text-ink-muted">
+        <FileImage aria-hidden="true" size={17} strokeWidth={1.5} />
       </div>
       <div className="min-w-0">
-        <p className="break-words text-sm font-semibold">
+        <p className="truncate text-[13px] font-medium">
           {item.originalFilename}
         </p>
-        <p className="mt-1 font-mono text-[11px] text-ink-muted">
-          {item.id} · {formatBytes(item.actualBytes ?? item.expectedBytes)}
-        </p>
-        <p className={`mt-2 text-xs leading-5 ${status.className}`}>
-          {status.label}
+        <p className="font-mono text-[11px] text-ink-muted tabular-nums">
+          {formatBytes(item.actualBytes ?? item.expectedBytes)} ·{" "}
+          {new Date(item.createdAt).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+          })}
         </p>
       </div>
-      <p className="col-start-2 font-mono text-[10px] text-ink-muted md:col-start-auto">
-        Added{" "}
-        {new Date(item.createdAt).toLocaleDateString("en-IN", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        })}
+      <p className={`text-[12px] font-medium ${status.className}`}>
+        {status.label}
       </p>
     </li>
   );
@@ -618,60 +577,61 @@ function LocalUploadRow({
   const status = getLocalStatus(upload);
 
   return (
-    <li className="grid grid-cols-[64px_minmax(0,1fr)] gap-4 px-5 py-4 md:grid-cols-[72px_minmax(0,1fr)_auto] md:items-center md:px-6">
-      <div className="relative aspect-square overflow-hidden rounded-md border border-rule bg-paper-subtle">
+    <li className="grid grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 px-4 py-2.5">
+      <div className="relative size-10 overflow-hidden rounded border border-rule bg-paper-subtle">
         <Image
           alt=""
           className="object-cover"
           fill
-          sizes="72px"
+          sizes="40px"
           src={upload.previewUrl}
           unoptimized
         />
       </div>
       <div className="min-w-0">
-        <p className="break-words text-sm font-semibold">{upload.file.name}</p>
-        <p className="mt-1 font-mono text-[11px] text-ink-muted">
+        <p className="truncate text-[13px] font-medium">{upload.file.name}</p>
+        <p className="font-mono text-[11px] text-ink-muted tabular-nums">
           {formatBytes(upload.file.size)}
-        </p>
-        <p className={`mt-2 text-xs leading-5 ${status.className}`}>
-          {status.label}
         </p>
         {upload.state === "UPLOADING" && (
           <progress
             aria-label={`Uploading ${upload.file.name}: ${upload.progress}%`}
-            className="mt-2 h-1.5 w-full overflow-hidden rounded-full accent-evidence"
+            className="mt-1 h-1 w-full overflow-hidden rounded-full accent-evidence"
             max={100}
             value={upload.progress}
           />
         )}
         {upload.error && (
-          <p className="mt-1 text-xs leading-5 text-blocked" role="alert">
+          <p className="text-[12px] leading-5 text-blocked" role="alert">
             {upload.error}
           </p>
         )}
       </div>
-      {upload.state === "FAILED" && (
-        <div className="col-start-2 flex flex-wrap gap-2 md:col-start-auto">
+      {upload.state === "FAILED" ? (
+        <div className="flex items-center gap-1">
           <button
-            className="inline-flex min-h-11 items-center gap-2 rounded-md px-3 text-sm font-semibold text-action transition-colors hover:bg-brand-wash focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+            aria-label={`Retry upload of ${upload.file.name}`}
+            className="inline-flex size-9 items-center justify-center rounded-lg text-ink-muted transition-colors duration-150 hover:bg-paper-subtle hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             onClick={onRetry}
             type="button"
           >
-            <RefreshCw aria-hidden="true" size={16} strokeWidth={1.75} />
-            Retry
+            <RefreshCw aria-hidden="true" size={15} strokeWidth={1.75} />
           </button>
           {!upload.assetId && (
             <button
-              className="inline-flex min-h-11 items-center gap-2 rounded-md px-3 text-sm font-semibold text-blocked transition-colors hover:bg-blocked-wash focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+              aria-label={`Remove ${upload.file.name}`}
+              className="inline-flex size-9 items-center justify-center rounded-lg text-ink-muted transition-colors duration-150 hover:bg-blocked-wash hover:text-blocked focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
               onClick={onRemove}
               type="button"
             >
-              <Trash2 aria-hidden="true" size={16} strokeWidth={1.75} />
-              Remove
+              <Trash2 aria-hidden="true" size={15} strokeWidth={1.75} />
             </button>
           )}
         </div>
+      ) : (
+        <p className={`text-[12px] font-medium ${status.className}`}>
+          {status.label}
+        </p>
       )}
     </li>
   );

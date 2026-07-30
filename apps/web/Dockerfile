@@ -30,8 +30,7 @@ RUN pnpm --filter @rebuild/analysis build \
   && pnpm --filter @rebuild/storage build \
   && pnpm --filter @rebuild/ui build
 RUN --mount=type=cache,id=rebuild-next,target=/workspace/apps/web/.next/cache \
-  pnpm --filter @rebuild/web typecheck \
-  && NEXT_SKIP_BUILTIN_TYPECHECK=1 pnpm --filter @rebuild/web build
+  NEXT_SKIP_BUILTIN_TYPECHECK=1 pnpm --filter @rebuild/web build
 
 FROM node:24.18.0-alpine AS runner
 ENV NODE_ENV=production

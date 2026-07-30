@@ -22,7 +22,10 @@ export function NewProjectForm({
   );
 
   return (
-    <form action={formAction} className="mt-8">
+    <form
+      action={formAction}
+      className="border border-rule bg-paper px-5 py-6 md:px-6"
+    >
       <input name="submissionToken" type="hidden" value={submissionToken} />
       {state.error && (
         <div
@@ -34,15 +37,14 @@ export function NewProjectForm({
       )}
 
       <fieldset className="border-0 p-0">
-        <legend className="w-full border-b border-rule pb-3 font-heading text-xl font-semibold">
-          Project identity
+        <legend className="w-full border-b border-rule pb-2 text-sm font-semibold">
+          Project
         </legend>
-        <div className="space-y-5 py-6">
+        <div className="space-y-5 py-5">
           <ProjectField
             autoComplete="off"
             defaultValue={state.values?.name}
             error={state.fieldErrors?.name?.[0]}
-            help="Use the internal name your team will recognize."
             label="Project name"
             maxLength={120}
             name="name"
@@ -53,10 +55,10 @@ export function NewProjectForm({
       </fieldset>
 
       <fieldset className="border-0 p-0">
-        <legend className="w-full border-b border-rule pb-3 font-heading text-xl font-semibold">
-          Site and planned work
+        <legend className="w-full border-b border-rule pb-2 text-sm font-semibold">
+          Site
         </legend>
-        <div className="space-y-5 py-6">
+        <div className="space-y-5 py-5">
           <ProjectField
             autoComplete="organization"
             defaultValue={state.values?.siteName}
@@ -71,14 +73,13 @@ export function NewProjectForm({
             autoComplete="address-level2"
             defaultValue={state.values?.locationText}
             error={state.fieldErrors?.locationText?.[0]}
-            help="City and state are enough for the first brief."
             label="Location"
             maxLength={240}
             name="locationText"
             placeholder="e.g. Pune, Maharashtra"
             required
           />
-          <div className="grid gap-2 md:grid-cols-[220px_minmax(0,1fr)] md:gap-7">
+          <div className="grid gap-2 md:grid-cols-[160px_minmax(0,1fr)] md:gap-6">
             <label
               className="pt-3 text-sm font-semibold text-ink"
               htmlFor="project-type"
@@ -122,7 +123,6 @@ export function NewProjectForm({
             autoComplete="off"
             defaultValue={state.values?.plannedWorkDate}
             error={state.fieldErrors?.plannedWorkDate?.[0]}
-            help="Optional. This helps prioritize evidence collection."
             label="Planned work date"
             name="plannedWorkDate"
             type="date"
@@ -131,10 +131,10 @@ export function NewProjectForm({
       </fieldset>
 
       <details
-        className="border-y border-rule py-5"
+        className="border-t border-rule py-4"
         open={Boolean(state.fieldErrors?.scaleNote?.[0])}
       >
-        <summary className="min-h-11 cursor-pointer font-heading text-base font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+        <summary className="flex min-h-11 cursor-pointer items-center text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
           Additional details
         </summary>
         <div className="pt-5">
@@ -151,16 +151,16 @@ export function NewProjectForm({
         </div>
       </details>
 
-      <div className="mt-7 flex flex-col-reverse justify-between gap-3 sm:flex-row">
+      <div className="mt-6 flex flex-col-reverse justify-between gap-3 sm:flex-row">
         <Link
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold text-ink-muted transition-colors hover:bg-paper-subtle hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg px-3 text-[13px] font-semibold text-ink-muted transition-colors hover:bg-paper-subtle hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           href="/projects"
         >
           <ArrowLeft aria-hidden="true" size={17} strokeWidth={1.75} />
           Back to projects
         </Link>
         <button
-          className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-action bg-action px-5 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-action bg-action px-5 text-[13px] font-semibold text-white transition-colors hover:border-ink hover:bg-ink disabled:cursor-wait disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
           disabled={pending}
           type="submit"
         >
@@ -173,7 +173,7 @@ export function NewProjectForm({
           ) : (
             <ArrowRight aria-hidden="true" size={17} strokeWidth={1.75} />
           )}
-          {pending ? "Saving project…" : "Save and prepare evidence"}
+          {pending ? "Creating…" : "Create project"}
         </button>
       </div>
     </form>
@@ -211,7 +211,7 @@ function ProjectField({
     .join(" ");
 
   return (
-    <div className="grid gap-2 md:grid-cols-[220px_minmax(0,1fr)] md:gap-7">
+    <div className="grid gap-2 md:grid-cols-[160px_minmax(0,1fr)] md:gap-6">
       <label className="pt-3 text-sm font-semibold text-ink" htmlFor={id}>
         {label} {required && <span className="text-action">*</span>}
       </label>

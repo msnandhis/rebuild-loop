@@ -146,6 +146,7 @@ export const analysisRuns = pgTable(
     projectId: uuid("project_id").notNull(),
     kind: analysisKind("kind").default("INITIAL").notNull(),
     baseRunId: uuid("base_run_id"),
+    clarificationTaskId: uuid("clarification_task_id"),
     status: analysisStatus("status").default("QUEUED").notNull(),
     phase: analysisPhase("phase").default("QUEUED").notNull(),
     model: varchar("model", { length: 120 }).notNull(),
@@ -190,6 +191,9 @@ export const analysisRuns = pgTable(
     uniqueIndex("analysis_runs_one_active_per_project")
       .on(table.ownerUserId, table.projectId)
       .where(sql`${table.status} in ('QUEUED', 'RUNNING')`),
+    index("analysis_runs_clarification_task_idx")
+      .on(table.ownerUserId, table.projectId, table.clarificationTaskId)
+      .where(sql`${table.clarificationTaskId} is not null`),
     index("analysis_runs_project_created_idx").on(
       table.ownerUserId,
       table.projectId,
@@ -477,6 +481,11 @@ export const candidateRevisions = pgTable(
       table.ownerUserId,
       table.projectId,
     ),
+    unique("candidate_revisions_id_project_owner_unique").on(
+      table.id,
+      table.projectId,
+      table.ownerUserId,
+    ),
     unique("candidate_revisions_id_run_owner_unique").on(
       table.id,
       table.analysisRunId,
@@ -577,6 +586,8 @@ export const clarificationTasks = pgTable(
     rationale: varchar("rationale", { length: 500 }).notNull(),
     requiredEvidence: clarificationEvidenceType("required_evidence").notNull(),
     status: clarificationTaskStatus("status").default("OPEN").notNull(),
+    resolvingRevisionId: uuid("resolving_revision_id"),
+    resolvedAt: timestamp("resolved_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -600,11 +611,81 @@ export const clarificationTasks = pgTable(
         candidateRevisions.projectId,
       ],
     }).onDelete("restrict"),
+    foreignKey({
+      name: "clarification_tasks_resolving_revision_thread_owner_fk",
+      columns: [
+        table.resolvingRevisionId,
+        table.candidateThreadId,
+        table.ownerUserId,
+        table.projectId,
+      ],
+      foreignColumns: [
+        candidateRevisions.id,
+        candidateRevisions.candidateThreadId,
+        candidateRevisions.ownerUserId,
+        candidateRevisions.projectId,
+      ],
+    }).onDelete("restrict"),
+    unique("clarification_tasks_id_project_owner_unique").on(
+      table.id,
+      table.projectId,
+      table.ownerUserId,
+    ),
     index("clarification_tasks_project_status_idx").on(
       table.ownerUserId,
       table.projectId,
       table.status,
       table.createdAt,
+    ),
+  ],
+);
+
+export const clarificationSubmissions = pgTable(
+  "clarification_submissions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    ownerUserId: text("owner_user_id").notNull(),
+    projectId: uuid("project_id").notNull(),
+    clarificationTaskId: uuid("clarification_task_id").notNull(),
+    mediaAssetId: uuid("media_asset_id").notNull(),
+    submittedByUserId: text("submitted_by_user_id").notNull(),
+    note: varchar("note", { length: 500 }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    foreignKey({
+      name: "clarification_submissions_task_owner_fk",
+      columns: [table.clarificationTaskId, table.projectId, table.ownerUserId],
+      foreignColumns: [
+        clarificationTasks.id,
+        clarificationTasks.projectId,
+        clarificationTasks.ownerUserId,
+      ],
+    }).onDelete("restrict"),
+    foreignKey({
+      name: "clarification_submissions_media_owner_fk",
+      columns: [table.mediaAssetId, table.projectId, table.ownerUserId],
+      foreignColumns: [
+        mediaAssets.id,
+        mediaAssets.projectId,
+        mediaAssets.ownerUserId,
+      ],
+    }).onDelete("restrict"),
+    unique("clarification_submissions_task_media_unique").on(
+      table.clarificationTaskId,
+      table.mediaAssetId,
+    ),
+    index("clarification_submissions_task_created_idx").on(
+      table.ownerUserId,
+      table.projectId,
+      table.clarificationTaskId,
+      table.createdAt,
+    ),
+    check(
+      "clarification_submissions_actor_owner",
+      sql`${table.submittedByUserId} = ${table.ownerUserId}`,
     ),
   ],
 );

@@ -7,10 +7,10 @@ export default function AuthLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <main
-      className="grid min-h-screen bg-canvas lg:grid-cols-[minmax(0,1fr)_minmax(440px,0.72fr)]"
+      className="grid min-h-screen bg-canvas lg:grid-cols-[minmax(360px,0.72fr)_minmax(480px,1fr)]"
       id="main-content"
     >
-      <section className="hidden border-r border-rule bg-brand-black p-12 text-white lg:flex lg:flex-col lg:justify-between">
+      <section className="hidden border-r border-rule bg-brand-black p-10 text-white lg:flex lg:flex-col lg:justify-between">
         <Link
           aria-label="ReBuild Loop home"
           className="w-fit focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus"
@@ -18,28 +18,22 @@ export default function AuthLayout({
         >
           <BrandMark inverse />
         </Link>
-        <div className="max-w-xl">
-          <p className="font-mono text-xs font-medium tracking-[0.14em] text-brand uppercase">
-            Controlled project record
-          </p>
-          <h2 className="mt-5 font-heading text-4xl leading-tight font-bold tracking-[-0.04em]">
-            Evidence first. Human decided. Every revision traceable.
+        <div className="max-w-md">
+          <h2 className="font-heading text-3xl leading-tight font-bold tracking-[-0.035em]">
+            Evidence-led material recovery.
           </h2>
-          <div className="mt-8 grid gap-4 border-t border-white/20 pt-6 text-sm leading-6 text-white/70">
-            <p>Site evidence stays connected to each material observation.</p>
-            <p>Unknowns remain visible until a person resolves them.</p>
-            <p>No model proposal approves its own recovery route.</p>
-          </div>
+          <p className="mt-4 max-w-[38ch] text-sm leading-6 text-white/65">
+            Capture site evidence, review proposals, and approve traceable
+            recovery plans.
+          </p>
         </div>
-        <p className="font-mono text-xs text-white/45">
-          REBUILD LOOP / FIELD LEDGER 0.1
-        </p>
+        <p className="text-xs text-white/45">Field workspace</p>
       </section>
       <section className="flex min-h-screen items-center justify-center bg-paper px-5 py-10 sm:px-8 lg:bg-canvas">
-        <div className="w-full max-w-[430px] border-rule bg-paper lg:border lg:p-9">
+        <div className="w-full max-w-[420px] bg-paper lg:border lg:border-rule lg:p-8">
           <Link
             aria-label="ReBuild Loop home"
-            className="mb-10 block w-fit focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus lg:hidden"
+            className="mb-9 block w-fit focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-focus lg:hidden"
             href="/"
           >
             <BrandMark />

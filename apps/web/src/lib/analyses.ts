@@ -12,7 +12,7 @@ import {
   workflowJobs,
 } from "@rebuild/db";
 import { PROMPT_VERSION, SCHEMA_VERSION } from "@rebuild/analysis";
-import { and, asc, eq, inArray, sql } from "drizzle-orm";
+import { and, asc, eq, inArray } from "drizzle-orm";
 
 export class AnalysisConflictError extends Error {}
 export class AnalysisNotFoundError extends Error {}
@@ -22,6 +22,13 @@ interface CreateAnalysisInput {
   idempotencyKey: string;
   mediaIds: string[];
   model: string;
+  ownerUserId: string;
+  projectId: string;
+}
+
+interface RetryAnalysisInput {
+  analysisId: string;
+  idempotencyKey: string;
   ownerUserId: string;
   projectId: string;
 }
@@ -223,6 +230,147 @@ export async function findAnalysis(
     .orderBy(asc(analysisInputs.ordinal));
 
   return { inputs, run };
+}
+
+export async function retryAnalysis(input: RetryAnalysisInput) {
+  const database = getDatabase();
+
+  return database.transaction(async (transaction) => {
+    const [source] = await transaction
+      .select()
+      .from(analysisRuns)
+      .where(
+        and(
+          eq(analysisRuns.id, input.analysisId),
+          eq(analysisRuns.projectId, input.projectId),
+          eq(analysisRuns.ownerUserId, input.ownerUserId),
+        ),
+      )
+      .limit(1);
+
+    if (!source) {
+      throw new AnalysisNotFoundError("Analysis not found");
+    }
+
+    const requestHash = hashJson({
+      baseRunId: source.id,
+      inputHash: source.inputHash,
+      model: source.model,
+      promptVersion: source.promptVersion,
+      schemaVersion: source.schemaVersion,
+    });
+    const [existing] = await transaction
+      .select()
+      .from(analysisRuns)
+      .where(
+        and(
+          eq(analysisRuns.ownerUserId, input.ownerUserId),
+          eq(analysisRuns.projectId, input.projectId),
+          eq(analysisRuns.idempotencyKey, input.idempotencyKey),
+        ),
+      )
+      .limit(1);
+
+    if (existing) {
+      if (
+        existing.requestHash !== requestHash ||
+        existing.baseRunId !== source.id
+      ) {
+        throw new AnalysisConflictError(
+          "The idempotency key was already used for a different analysis.",
+        );
+      }
+      return existing;
+    }
+
+    if (source.status !== "FAILED" || !source.retryable) {
+      throw new AnalysisConflictError(
+        source.status === "FAILED"
+          ? "This failure cannot be retried safely. Review the error and submit different evidence."
+          : "Only a failed analysis can be retried.",
+      );
+    }
+
+    const inputs = await transaction
+      .select()
+      .from(analysisInputs)
+      .where(
+        and(
+          eq(analysisInputs.analysisRunId, source.id),
+          eq(analysisInputs.projectId, input.projectId),
+          eq(analysisInputs.ownerUserId, input.ownerUserId),
+        ),
+      )
+      .orderBy(asc(analysisInputs.ordinal));
+    if (inputs.length === 0) {
+      throw new AnalysisConflictError(
+        "The original analysis has no retained evidence to retry.",
+      );
+    }
+
+    const runId = crypto.randomUUID();
+    const [run] = await transaction
+      .insert(analysisRuns)
+      .values({
+        baseRunId: source.id,
+        clarificationTaskId: source.clarificationTaskId,
+        id: runId,
+        idempotencyKey: input.idempotencyKey,
+        inputHash: source.inputHash,
+        kind: source.kind,
+        model: source.model,
+        ownerUserId: input.ownerUserId,
+        projectId: input.projectId,
+        promptVersion: source.promptVersion,
+        requestHash,
+        schemaVersion: source.schemaVersion,
+      })
+      .returning();
+    if (!run) {
+      throw new Error("Analysis retry insert did not return a record");
+    }
+
+    await transaction.insert(analysisInputs).values(
+      inputs.map((item) => ({
+        analysisRunId: runId,
+        bytesSnapshot: item.bytesSnapshot,
+        heightSnapshot: item.heightSnapshot,
+        mediaAssetId: item.mediaAssetId,
+        mimeSnapshot: item.mimeSnapshot,
+        ordinal: item.ordinal,
+        ownerUserId: input.ownerUserId,
+        projectId: input.projectId,
+        purpose: item.purpose,
+        sha256Snapshot: item.sha256Snapshot,
+        widthSnapshot: item.widthSnapshot,
+      })),
+    );
+    await transaction
+      .update(projects)
+      .set({ status: "ANALYSING", updatedAt: new Date() })
+      .where(
+        and(
+          eq(projects.id, input.projectId),
+          eq(projects.ownerUserId, input.ownerUserId),
+        ),
+      );
+    await transaction.insert(auditEvents).values({
+      actorUserId: input.ownerUserId,
+      entityId: runId,
+      entityType: "analysis_run",
+      eventType: "analysis.retry_queued",
+      ownerUserId: input.ownerUserId,
+      payload: { sourceAnalysisRunId: source.id },
+      projectId: input.projectId,
+    });
+    await transaction.insert(workflowJobs).values({
+      jobKey: `analysis:${runId}`,
+      payload: { analysisRunId: runId },
+      task: "analyze_project",
+    });
+
+    return run;
+  });
 }
 
 function hashJson(value: unknown): string {

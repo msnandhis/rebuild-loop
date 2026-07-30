@@ -15,6 +15,12 @@ export interface GeminiAnalysisOptions {
   evidence: EvidenceInput[];
   model: string;
   signal?: AbortSignal;
+  /**
+   * Application-authored context for a clarification run. This may contain a
+   * prior proposal and the human's evidence request, but never raw browser
+   * instructions. It is framed as evidence context rather than model policy.
+   */
+  taskContext?: string;
 }
 
 interface GenerateContentResponse {
@@ -51,6 +57,9 @@ export async function analyzeEvidenceWithGemini(
   const manifest = options.evidence
     .map((item, index) => `${index + 1}. assetId=${item.assetId}`)
     .join("\n");
+  const taskContext = options.taskContext?.trim()
+    ? `\nApplication-authored clarification context:\n${options.taskContext.trim()}\nCompare the new evidence with the prior proposal. Revise or withdraw unsupported observations; do not preserve a claim merely for consistency.`
+    : "";
 
   const response = await fetch(endpoint, {
     body: JSON.stringify({
@@ -58,7 +67,7 @@ export async function analyzeEvidenceWithGemini(
         {
           parts: [
             {
-              text: `Inspect this immutable evidence manifest:\n${manifest}\nReturn conservative, evidence-linked material candidates.`,
+              text: `Inspect this immutable evidence manifest:\n${manifest}${taskContext}\nReturn conservative, evidence-linked material candidates.`,
             },
             ...options.evidence.flatMap((item) => [
               { text: `Evidence assetId=${item.assetId}` },
