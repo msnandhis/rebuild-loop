@@ -10,9 +10,16 @@ outside this workspace as a recoverable legacy archive.
 
 ### ReBuild Loop — Pre-Demolition Circularity Agent
 
-> Before demolition turns reusable building components into mixed rubble, ReBuild Loop turns a phone walkthrough into a human-reviewed recovery plan and matched reuse opportunities.
+> Before demolition turns useful building components into mixed debris,
+> ReBuild Loop turns verified site images into a human-reviewed recovery plan.
 
-ReBuild Loop is an evidence-first decision agent for Indian renovation and demolition projects. Gemini extracts a preliminary, confidence-scored inventory from site media and optional BOQs. Humans verify consequential facts before deterministic rules calculate recovery pathways, matching, and potential impact.
+ReBuild Loop is a human-supervised decision agent for renovation and demolition
+projects. Gemini turns verified site images into preliminary, evidence-linked
+material observations. People confirm consequential facts before deterministic
+rules create recovery routes and a versioned, auditable plan.
+
+The current build accepts still images; it does not yet include BOQ/video intake,
+buyer matching, impact calculations, or regulatory integrations.
 
 - **Hackathon stream:** Open Innovation
 - **Google AI service:** Gemini Models
@@ -24,14 +31,15 @@ The complete documentation is organized by subject in [`docs/`](docs/README.md).
 
 ### Start here
 
-1. [Project overview, problem, and hackathon fit](docs/03-rebuild-loop/01-overview-problem-and-hackathon-fit.md)
-2. [Competition and positioning](docs/03-rebuild-loop/02-competition-and-positioning.md)
-3. [Product and user experience](docs/03-rebuild-loop/03-product-and-user-experience.md)
-4. [Technical architecture](docs/03-rebuild-loop/04-technical-architecture.md)
-5. [AI safety and evaluation](docs/03-rebuild-loop/05-ai-safety-and-evaluation.md)
-6. [Demo and scoring strategy](docs/03-rebuild-loop/06-demo-and-scoring.md)
-7. [Delivery and deployment](docs/03-rebuild-loop/07-delivery-and-deployment.md)
-8. [Submission copy and success criteria](docs/03-rebuild-loop/08-submission-and-success-criteria.md)
+1. [Current product truth, research, and hackathon story](docs/03-rebuild-loop/09-product-truth-research-and-hackathon-story.md)
+2. [Project overview, problem, and hackathon fit](docs/03-rebuild-loop/01-overview-problem-and-hackathon-fit.md)
+3. [Competition and positioning](docs/03-rebuild-loop/02-competition-and-positioning.md)
+4. [Product and user experience](docs/03-rebuild-loop/03-product-and-user-experience.md)
+5. [Technical architecture](docs/03-rebuild-loop/04-technical-architecture.md)
+6. [AI safety and evaluation](docs/03-rebuild-loop/05-ai-safety-and-evaluation.md)
+7. [Demo and scoring strategy](docs/03-rebuild-loop/06-demo-and-scoring.md)
+8. [Delivery and deployment](docs/03-rebuild-loop/07-delivery-and-deployment.md)
+9. [Submission copy and success criteria](docs/03-rebuild-loop/08-submission-and-success-criteria.md)
 
 ## Local development
 

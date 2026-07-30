@@ -4,13 +4,20 @@
 
 Research and architecture decision record, validated on **16 July 2026**.
 
+This document retains the original product strategy. For the current
+implementation boundary, verified research, and submission narrative, use
+[Product Truth, Research, and Hackathon Story](09-product-truth-research-and-hackathon-story.md).
+
 ## Executive Verdict
 
 **Build ReBuild Loop and submit it under Open Innovation.**
 
 The strongest version is not a generic material marketplace and not an automated compliance tool. It is:
 
-> **An evidence-first pre-demolition recovery agent for India. From a phone walkthrough and optional BOQ, it creates a confidence-scored inventory, asks for missing evidence, separates reusable components from EPR-relevant mineral debris, recommends verifiable next destinations, and produces a human-approved recovery pack before demolition begins.**
+> **A human-supervised pre-demolition recovery agent. From verified site
+> images, it creates evidence-linked material proposals, exposes unknowns,
+> preserves clarification revisions, and produces a human-approved recovery
+> plan before demolition begins.**
 
 The memorable idea is simple:
 
@@ -37,8 +44,8 @@ Most waste software begins after material has become mixed debris. ReBuild Loop 
 
 | Requirement        | Current published position                                                    | ReBuild Loop response                                                             |
 | ------------------ | ----------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Deadline           | **5 August 2026, 11:59 PM IST**                                               | Target a complete submission by 2 August and preserve three days for feedback     |
-| Finale             | Top 100; **8 August 2026, 9:00 AM IST**, Google Office, Bengaluru             | Keep the demo reproducible and deployable from the repository                     |
+| Deadline           | **1 August 2026, 11:59 PM IST**                                               | Submit and complete voting before the current published cutoff                    |
+| Finale             | Top 100; **8 August 2026, 9:00 AM IST**, Bengaluru; venue undisclosed         | Keep the demo reproducible and deployable from the repository                     |
 | Eligibility        | Developers, students, founders and researchers across India; all skill levels | Eligible based on the published wording                                           |
 | AI stack           | Any combination of the listed Google technologies                             | Use **Gemini Models** only; do not claim services not implemented                 |
 | Evaluation         | AI-agent/team evaluation 50%                                                  | Show a real observe-decide-act-review-adapt loop and publish evaluation evidence  |

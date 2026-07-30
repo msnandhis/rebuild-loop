@@ -20,7 +20,8 @@ The programme says participants may update their submission after submitting it.
 
 ### Step 1 — Submit the agent
 
-Upload the working agent, demo video, GitHub repository, problem statement, and pitch by **5 August 2026 at 11:59 PM**.
+Upload the working agent, demo video, GitHub repository, problem statement, and
+pitch by **1 August 2026 at 11:59 PM IST**.
 
 ### Step 2 — Receive immediate feedback
 
@@ -36,7 +37,9 @@ The leaderboard score combines organiser evaluation, community votes, and struct
 
 ### Step 5 — Top 100 Grand Finale
 
-The Top 100 builders are shortlisted for the full-day Grand Finale at the Google Office in Bengaluru. The finale includes building, iteration, live demonstrations, mentoring, and judging.
+The Top 100 builders are shortlisted for the full-day Grand Finale in Bengaluru.
+The current finale listing does not disclose the exact venue. The finale
+includes building, iteration, live demonstrations, mentoring, and judging.
 
 ## Leaderboard scoring
 
@@ -59,7 +62,7 @@ The site does not publish a detailed sub-rubric explaining how the 50% technical
 | ------------ | --------------------------------------------------------------------- |
 | Date         | Saturday, 8 August 2026                                               |
 | Start        | 9:00 AM IST                                                           |
-| Location     | Google Office, Bengaluru                                              |
+| Location     | Bengaluru; exact venue currently undisclosed                          |
 | Participants | Top 100 builders from the national leaderboard                        |
 | Duration     | Full day                                                              |
 | Activities   | Build, iterate, receive mentoring, demo, pitch, and face live judging |
@@ -225,14 +228,16 @@ These items should be confirmed with the organisers before making costly travel,
 - [ ] Prepare the GitHub repository and documentation.
 - [ ] Record a concise demo video.
 - [ ] Write the problem statement and pitch.
-- [ ] Submit before 5 August 2026, 11:59 PM.
+- [ ] Submit before 1 August 2026, 11:59 PM IST.
 - [ ] Review platform feedback and improve the entry.
 - [ ] Share the Agent Card and gather legitimate votes.
 - [ ] Prepare for the Bengaluru finale if shortlisted.
 
 ## Final assessment
 
-The programme is most valuable as an opportunity to produce a credible portfolio project, gain experience with Gemini and Google's agent stack, receive public feedback, and potentially present at the Google Office in Bengaluru.
+The programme is most valuable as an opportunity to produce a credible
+portfolio project, gain experience with Gemini and Google's agent stack, receive
+public feedback, and potentially present at the in-person Bengaluru finale.
 
 The strongest strategy is to build a **focused, reliable, end-to-end agent**, submit early, improve it using feedback, document it thoroughly, and communicate its impact clearly. Because 50% of the published leaderboard score comes from votes and structured feedback, community engagement and iteration must be planned alongside technical development.
 

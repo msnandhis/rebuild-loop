@@ -6,19 +6,39 @@
 
 ## One-line description
 
-> Before demolition turns reusable building components into mixed rubble, ReBuild Loop turns a phone walkthrough into a human-reviewed recovery plan and matched reuse opportunities.
+> ReBuild Loop turns verified site images into a human-reviewed material ledger
+> and recovery plan before demolition turns useful components into mixed
+> debris.
 
 ## Problem and solution description
 
-> Building materials often lose their identity and value the moment mechanical demolition begins. Indian project teams may have incomplete drawings, fragmented spreadsheets and too little time to identify reuse demand before removal. ReBuild Loop uses Gemini to turn phone walkthroughs and optional BOQs into an evidence-linked, confidence-scored candidate inventory. It asks for missing measurements or close-ups, requires human confirmation, separates reusable components from EPR-relevant mineral debris, and uses transparent deterministic rules to recommend recovery pathways and demonstration buyer/recycler matches. A named reviewer approves the final recovery pack. ReBuild Loop is decision support, not a structural, hazardous-material or compliance certification system.
+> Recoverable building components are often documented too late, after
+> destructive removal has reduced the available evidence and recovery options.
+> ReBuild Loop uses Gemini to turn verified site images into preliminary
+> observations linked to the source evidence and exposes what remains unknown.
+> A reviewer accepts, corrects, rejects, requests a close-up, or escalates each
+> proposal. New evidence creates a linked revision rather than hiding the
+> earlier result. Deterministic rules then block unsafe direct-reuse routes and
+> produce a versioned plan with named approval and an audit trail. ReBuild Loop
+> is decision support, not a certification, compliance portal, or marketplace.
 
 ## How is it different?
 
-> Existing international platforms already offer audits, passports and marketplaces. ReBuild Loop is designed for low-data Indian renovation and demolition workflows. Its core innovation is an evidence-seeking agent that exposes uncertainty and maintains two distinct material ledgers: high-value reusable/resalable components and EPR-relevant mineral debris. It does not create another empty marketplace; it prepares verified, buyer-ready lots and routes them into existing reuse, scrap, recycler and municipal channels. Matching and impact calculations are deterministic and blocked until a human confirms the inventory.
+> Existing international platforms already offer audits, passports, and
+> marketplaces. ReBuild Loop focuses on the first-mile decision before
+> demolition: incomplete site evidence, unresolved risks, and accountable
+> material decisions. It preserves the evidence behind every proposal, supports
+> a clarification and revision loop, keeps safety rules outside the model, and
+> requires a named human decision before a recovery plan is approved.
 
 ## Major roadblocks
 
-> Visual media cannot establish exact quantities, structural fitness or the absence of hazardous material. We addressed this by preserving evidence provenance, expressing uncertain ranges, asking targeted clarification questions, blocking unsafe pathways, and recording human approval. A second challenge is the absence of live buyer and municipal APIs, so the prototype uses a clearly labelled demonstration demand dataset and makes no claim of live commercial or government integration.
+> Site images cannot prove exact quantity, structural fitness, fire performance,
+> or the absence of hazardous material. The application therefore presents
+> preliminary ranges and unknowns, preserves source evidence, requires human
+> decisions, and blocks direct reuse when a specialist or safety gate remains
+> unresolved. The current prototype has no live buyer or government integration,
+> so it makes no transaction or compliance claim.
 
 ## Category
 
@@ -38,7 +58,8 @@
 
 - A new user understands the problem in under 20 seconds.
 - One project completes the full intake-to-approved-plan path.
-- The agent asks at least one useful targeted clarification.
+- A model-identified unknown produces at least one useful human-authored
+  clarification request.
 - New evidence visibly changes one recommendation.
 - No unconfirmed item reaches matching.
 - No specialist-flagged item is recommended for direct reuse.

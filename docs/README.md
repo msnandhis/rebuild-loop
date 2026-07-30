@@ -10,6 +10,7 @@ This repository contains the product, engineering, competition, and design-syste
 
 ## 03 — Product specification
 
+- [Current product truth, research, and hackathon story](03-rebuild-loop/09-product-truth-research-and-hackathon-story.md)
 - [Overview, problem, regulation, and hackathon fit](03-rebuild-loop/01-overview-problem-and-hackathon-fit.md)
 - [Competitors, alternatives, and positioning](03-rebuild-loop/02-competition-and-positioning.md)
 - [Product scope, agent loop, and user experience](03-rebuild-loop/03-product-and-user-experience.md)
@@ -34,8 +35,9 @@ This repository contains the product, engineering, competition, and design-syste
 
 ## Recommended reading order
 
-1. Product overview
-2. Product and user experience
-3. Complete implementation plan
-4. Environment and branching workflow
-5. Field Ledger design system
+1. Current product truth, research, and hackathon story
+2. Product overview
+3. Product and user experience
+4. Complete implementation plan
+5. Environment and branching workflow
+6. Field Ledger design system

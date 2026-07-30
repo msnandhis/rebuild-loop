@@ -1,6 +1,11 @@
-# 12. Delivery Plan to 5 August 2026
+# 12. Delivery Plan to 1 August 2026
 
 Assumption: a focused team of one to three builders. If solo, keep the same sequence and cut visual polish before cutting the agent loop or evaluation.
+
+The dated phases below record the original roadmap, not completion status. The
+current implementation boundary is maintained in
+[Product Truth, Research, and Hackathon Story](09-product-truth-research-and-hackathon-story.md).
+BOQ/video intake, matching, and impact calculations remain deferred.
 
 ## 16–17 July — Foundation
 
@@ -39,34 +44,28 @@ Assumption: a focused team of one to three builders. If solo, keep the same sequ
 - Add named approval and change history.
 - Complete the seeded office/school demo project.
 
-## 30–31 July — Evaluation and hardening
+## 30 July — Truth freeze and hardening
 
-- Build the labelled evaluation set.
-- Measure extraction, evidence, safety and adaptation behavior.
+- Reconcile public copy with the implemented image-only workflow.
+- Attach images to the labelled evaluation set and record honest results.
 - Test idempotency, retries, authorization, file limits and recovery.
-- Run backup/restore and deployment rollback checks.
+- Run the full authenticated production smoke test.
 - Fix only failures that threaten the demo or claims.
 
-## 1–2 August — Submission v1
+## 31 July — Submission build
 
 - Finish README setup, architecture, methodology and limitations.
 - Record the three-minute demo and short share clip.
 - Create thumbnail and Agent Card.
-- Deploy tagged release and submit early.
+- Deploy the release and submit early enough to verify every public link.
 
-## 3–4 August — Feedback iteration
-
-- Prioritize official/structured feedback.
-- Document what changed.
-- Re-record only affected demo segments.
-- Freeze features by the evening of 4 August.
-
-## 5 August — Final verification
+## 1 August — Final verification and voting cutoff
 
 - Test the public demo from a clean browser and mobile network.
 - Verify repository access, video permissions and all URLs.
 - Check form fields and technology claims.
-- Submit final update well before **11:59 PM IST**.
+- Submit the final update and complete community outreach well before
+  **11:59 PM IST**.
 
 ## 13. Docker and Coolify Deployment
 

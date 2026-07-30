@@ -4,13 +4,17 @@
 
 The **AI Agent Builder Series 2026** is presented as a 45-day national AI-agent innovation programme organised by **AI House Bangalore in collaboration with Google for Developers**. Participants build and submit a working AI agent, receive feedback, gather community votes, and compete on a national leaderboard.
 
-The **Top 100 builders on the leaderboard** are shortlisted for an in-person, full-day Grand Finale Hackathon at the Google Office in Bengaluru on **8 August 2026**.
+The **Top 100 builders on the leaderboard** are shortlisted for an in-person,
+full-day Grand Finale Hackathon in Bengaluru on **8 August 2026**. The current
+finale listing does not disclose the exact venue.
 
-This document records the programme information available on 16 July 2026. Rules and schedules may change, so important decisions should be checked against the official programme page and submission platform.
+This document records the programme information rechecked on 30 July 2026.
+Rules and schedules may change, so important decisions should be checked
+against the official programme page and submission platform.
 
 ## Important links
 
-- Programme page: <https://www.aihouze.xyz/google-hackathon>
+- Programme page: <https://www.aihouze.xyz/agent-builder>
 - Agent submission and leaderboard platform: <https://app.hidevs.xyz/nominate/google>
 - AI House programme announcement: <https://www.linkedin.com/posts/ai-house-bangalore_buildwithai-googlefordevelopers-googleai-activity-7472989006385901568-N92->
 - Kickoff event listing: <https://luma.com/ai-er01>
@@ -26,12 +30,12 @@ This document records the programme information available on 16 July 2026. Rules
 | Collaboration shown on the page | Google for Developers                                         |
 | Programme period                | 21 June–8 August 2026                                         |
 | Geographic scope                | Developers and builders across India                          |
-| Submission deadline             | 5 August 2026, 11:59 PM                                       |
+| Submission deadline             | 1 August 2026, 11:59 PM IST                                   |
 | Finale shortlist                | Top 100 leaderboard participants                              |
 | Grand Finale                    | Saturday, 8 August 2026                                       |
 | Finale start time               | 9:00 AM IST                                                   |
 | Finale format                   | Full-day, in-person hackathon                                 |
-| Finale venue                    | Google Office, Bengaluru                                      |
+| Finale venue                    | Bengaluru; exact venue currently undisclosed                  |
 
 The programme includes workshops, local hackathons, buildathons, feedback, community voting, leaderboard ranking, and the final in-person event.
 

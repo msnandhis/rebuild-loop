@@ -1,5 +1,11 @@
 # 8. AI Contract, Rules and Safety
 
+The evaluation section in this document is a plan, not measured model
+performance. The current repository has 12 scenario definitions without
+attached image fixtures or scored Gemini results. See
+[Product Truth, Research, and Hackathon Story](09-product-truth-research-and-hackathon-story.md)
+for the current evidence boundary.
+
 ## Structured extraction contract
 
 Use Gemini structured outputs and validate again with Zod. Each candidate must include:

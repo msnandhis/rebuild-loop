@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Lock } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -96,6 +96,127 @@ export function ProjectStageRail({
         })}
       </ol>
     </nav>
+  );
+}
+
+/**
+ * A quiet end-of-page continuation for the same stages shown in the rail.
+ *
+ * Page-specific actions still own the primary workflow decision. This pager
+ * only removes the need to scroll back to the rail after a stage is complete.
+ */
+export function ProjectStagePager({
+  projectId,
+  projectStatus,
+}: {
+  projectId: string;
+  projectStatus: string;
+}) {
+  const pathname = usePathname();
+  const current = currentStage(pathname, projectId);
+  const currentIndex = STAGES.findIndex((stage) => stage.key === current);
+  const unlockedThrough = unlockedStages(projectStatus);
+
+  if (currentIndex < 0) {
+    return null;
+  }
+
+  const previous = STAGES[currentIndex - 1];
+  const next = STAGES[currentIndex + 1];
+  const nextIsUnlocked = next ? currentIndex + 1 < unlockedThrough : false;
+
+  return (
+    <nav
+      aria-label="Move between project stages"
+      className="mt-8 border-t border-rule pt-4"
+    >
+      <div className="flex items-stretch justify-between gap-3">
+        {previous ? (
+          <StagePagerLink
+            direction="previous"
+            href={stageHref(projectId, previous.key)}
+            name={previous.name}
+          />
+        ) : (
+          <span aria-hidden="true" />
+        )}
+
+        {next ? (
+          nextIsUnlocked ? (
+            <StagePagerLink
+              direction="next"
+              href={stageHref(projectId, next.key)}
+              name={next.name}
+            />
+          ) : (
+            <span
+              aria-disabled="true"
+              className="flex min-h-12 min-w-0 max-w-[18rem] cursor-not-allowed items-center justify-end gap-3 rounded-lg border border-rule bg-paper-subtle px-3 py-2 text-right text-ink-muted/70"
+              role="link"
+            >
+              <span className="min-w-0">
+                <span className="block text-[11px] font-medium">
+                  Next step locked
+                </span>
+                <span className="block text-sm font-semibold text-ink-muted">
+                  {blockingReason(currentIndex + 1)}
+                </span>
+              </span>
+              <Lock
+                aria-hidden="true"
+                className="shrink-0"
+                size={16}
+                strokeWidth={1.75}
+              />
+            </span>
+          )
+        ) : null}
+      </div>
+    </nav>
+  );
+}
+
+function StagePagerLink({
+  direction,
+  href,
+  name,
+}: {
+  direction: "next" | "previous";
+  href: string;
+  name: string;
+}) {
+  const isPrevious = direction === "previous";
+
+  return (
+    <Link
+      className={`flex min-h-12 min-w-0 max-w-[18rem] items-center gap-3 rounded-lg border border-rule bg-paper px-3 py-2 text-ink transition-colors duration-150 hover:border-rule-strong hover:bg-paper-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${
+        isPrevious ? "" : "ml-auto text-right"
+      }`}
+      href={href}
+    >
+      {isPrevious ? (
+        <ArrowLeft
+          aria-hidden="true"
+          className="shrink-0 text-ink-muted"
+          size={17}
+          strokeWidth={1.75}
+        />
+      ) : null}
+      <span className="min-w-0">
+        <span className="block text-[11px] font-medium text-ink-muted">
+          {isPrevious ? "Previous" : "Next"}
+        </span>
+        <span className="block text-sm font-semibold">{name}</span>
+      </span>
+      {isPrevious ? null : (
+        <ArrowRight
+          aria-hidden="true"
+          className="shrink-0 text-action"
+          size={17}
+          strokeWidth={1.75}
+        />
+      )}
+    </Link>
   );
 }
 
