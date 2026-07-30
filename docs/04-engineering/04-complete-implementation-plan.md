@@ -51,12 +51,14 @@ Unpublished or unclear items—including detailed judging rubric, team-size limi
 
 ### Effective delivery gates
 
-| Gate                       | Deadline   | Required result                                        |
-| -------------------------- | ---------- | ------------------------------------------------------ |
-| Public qualification build | 31 July    | Deployed app, real Gemini run, core demo recording     |
-| Voting-ready submission    | 1 August   | Agent Card, short clip, stable public URL              |
-| Feedback iteration         | 2–4 August | Fix blockers and document changes                      |
-| Final verification         | 5 August   | Final links, repository, video, claims, tagged release |
+| Gate                       | Deadline | Required result                                        |
+| -------------------------- | -------- | ------------------------------------------------------ |
+| Public qualification build | 31 July  | Deployed app, real Gemini run, core demo recording     |
+| Voting-ready submission    | 1 August | Agent Card, short clip, stable public URL              |
+| Final verification         | 1 August | Final links, repository, video, claims, tagged release |
+
+The earlier 2–5 August iteration window is no longer available under the live
+1 August 2026, 11:59 PM IST submission and voting cutoff.
 
 ## 3. Product boundaries
 

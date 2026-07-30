@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 
 import { StatusTag } from "@rebuild/ui";
 
-import { ProjectStageRail } from "../../../../components/workspace/project-stage-rail";
+import {
+  ProjectStagePager,
+  ProjectStageRail,
+} from "../../../../components/workspace/project-stage-rail";
 import { projectStatusView } from "../../../../lib/project-status";
 import { findOwnedProject } from "../../../../lib/projects";
 import { requireSession } from "../../../../lib/session";
@@ -82,7 +85,13 @@ export default async function ProjectLayout({
           </div>
         </div>
       </div>
-      <div className="mx-auto max-w-[1360px] px-5 py-6 md:px-8">{children}</div>
+      <div className="mx-auto max-w-[1360px] px-5 py-6 md:px-8">
+        {children}
+        <ProjectStagePager
+          projectId={project.id}
+          projectStatus={project.status}
+        />
+      </div>
     </>
   );
 }

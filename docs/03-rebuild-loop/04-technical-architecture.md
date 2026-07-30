@@ -1,5 +1,11 @@
 # 7. Technical Architecture
 
+This is the original target architecture. The current worker uses a small
+PostgreSQL-backed domain queue rather than Graphile Worker, and several planned
+domains remain deferred. See
+[Product Truth, Research, and Hackathon Story](09-product-truth-research-and-hackathon-story.md)
+for the implemented boundary.
+
 ## Architecture decision
 
 Use a **modular monolith plus one background worker**:
