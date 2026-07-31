@@ -13,4 +13,5 @@ allowBuilds:
   unrs-resolver: true
 
 minimumReleaseAgeExclude:
+  - "@google/genai@2.15.0"
   - postcss@8.5.24
