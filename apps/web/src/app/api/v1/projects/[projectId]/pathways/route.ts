@@ -19,7 +19,11 @@ export async function GET(
   const correlationId = crypto.randomUUID();
   const user = await getApiUser(request);
   if (!user) {
-    return apiProblem(401, "Sign in to view recovery routes.", correlationId);
+    return apiProblem(
+      401,
+      "Sign in to view recommended actions.",
+      correlationId,
+    );
   }
   const { projectId } = await context.params;
   if (!isUuid(projectId) || !(await findOwnedProject(projectId, user.id))) {
@@ -37,7 +41,7 @@ export async function GET(
   } catch {
     return apiProblem(
       503,
-      "Recovery routes are temporarily unavailable.",
+      "Recommended actions are temporarily unavailable.",
       correlationId,
     );
   }
@@ -52,7 +56,7 @@ export async function POST(
   if (!user) {
     return apiProblem(
       401,
-      "Sign in to calculate recovery routes.",
+      "Sign in to prepare recommended actions.",
       correlationId,
     );
   }
@@ -76,9 +80,14 @@ export async function POST(
     if (error instanceof RecoveryValidationError) {
       return apiProblem(409, error.message, correlationId, "PATHWAY_BLOCKED");
     }
+    console.error("Unexpected recovery recommendation failure", {
+      correlationId,
+      error,
+      projectId,
+    });
     return apiProblem(
       503,
-      "Recovery routes could not be calculated. Confirmed lots were retained.",
+      "Recommended actions could not be prepared. Your confirmed materials are unchanged.",
       correlationId,
     );
   }

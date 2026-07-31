@@ -78,19 +78,13 @@ export default async function ProjectLayout({
               .join(" · ")}
           </p>
           <div className="mt-1.5">
-            <ProjectStageRail
-              projectId={project.id}
-              projectStatus={project.status}
-            />
+            <ProjectStageRail projectId={project.id} />
           </div>
         </div>
       </div>
       <div className="mx-auto max-w-[1360px] px-5 py-6 md:px-8">
         {children}
-        <ProjectStagePager
-          projectId={project.id}
-          projectStatus={project.status}
-        />
+        <ProjectStagePager projectId={project.id} />
       </div>
     </>
   );

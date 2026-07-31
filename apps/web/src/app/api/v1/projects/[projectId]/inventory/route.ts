@@ -16,7 +16,7 @@ export async function GET(
   if (!user) {
     return apiProblem(
       401,
-      "Sign in to view the materials ledger.",
+      "Sign in to view confirmed materials.",
       correlationId,
     );
   }
@@ -37,7 +37,7 @@ export async function GET(
   } catch {
     return apiProblem(
       503,
-      "The materials ledger is temporarily unavailable.",
+      "Confirmed materials are temporarily unavailable.",
       correlationId,
     );
   }

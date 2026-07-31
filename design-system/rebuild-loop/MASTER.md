@@ -98,9 +98,12 @@ Global navigation contains Projects, Method & limitations, and the signed-in use
 
 ### Project stages
 
-Site brief → Capture → Review → Materials ledger → Recovery routes → Recovery pack.
+Overview → Evidence → Review → Recovery plan.
 
-Every stage has a deep link. Unavailable stages remain visible and state the exact blocking reason.
+Every stage has a deep link. The recovery plan combines confirmed materials,
+recommended actions, blockers, removal order, approval, and export. Materials
+ledger entries, route assessments, and plan revisions remain separate audit
+records in the database, but they are not separate user tasks.
 
 ### Desktop review workbench
 
@@ -124,9 +127,9 @@ Mobile is a site companion, not a compressed desktop application. Prioritize tod
 - `CandidateReviewWorkbench`
 - `ClarificationTask`
 - `DecisionGate`
-- `MaterialLedger`
+- `ConfirmedMaterials`
 - `MaterialLotRow`
-- `RouteSheet`
+- `RecommendedAction`
 - `MatchScoreBreakdown`
 - `DeconstructionSequence`
 - `TraceDrawer`

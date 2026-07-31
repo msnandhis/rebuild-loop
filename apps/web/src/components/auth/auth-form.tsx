@@ -266,7 +266,7 @@ export function AuthForm({ autoDemo = false, mode }: AuthFormProps) {
             className="mt-1.5 text-xs leading-5 text-ink-muted"
             id={`${mode}-password-help`}
           >
-            Use 10–128 characters. Password recovery is not available in the
+            Use 10 to 128 characters. Password recovery is not available in the
             hackathon build.
           </p>
         )}
