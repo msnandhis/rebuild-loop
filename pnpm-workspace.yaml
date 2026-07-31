@@ -18,3 +18,5 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - "@google/genai@2.15.0"
   - postcss@8.5.24
+  - "@google/adk-devtools@1.5.0"
+  - "@google/adk@1.5.0"

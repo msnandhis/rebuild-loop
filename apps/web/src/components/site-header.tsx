@@ -17,7 +17,24 @@ export async function SiteHeader() {
         >
           <BrandMark />
         </Link>
-        <nav aria-label="Primary" className="flex items-center gap-1 sm:gap-3">
+        <nav aria-label="Primary" className="flex items-center gap-2">
+          <div className="hidden items-center md:flex">
+            {(
+              [
+                ["How it works", "/#how-it-works"],
+                ["Materials list", "/#materials"],
+                ["Sample review", "/#sample-review"],
+              ] as const
+            ).map(([label, href]) => (
+              <Link
+                className="inline-flex min-h-11 items-center rounded-sm px-3 text-sm font-medium text-ink-muted transition-colors hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
+                href={href}
+                key={href}
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
           <Link
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-action bg-action px-4 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
             href={session ? "/projects" : "/sign-in"}

@@ -6,7 +6,7 @@
 [Sample review](https://rebuildloop.msnandhis.com/projects/demo/review) ·
 [Method and limits](https://rebuildloop.msnandhis.com/method)
 
-![A surveyor inspecting reusable building materials before demolition](apps/web/public/images/material-survey-hero.webp)
+![A surveyor inspecting reusable building materials before demolition](apps/web/public/images/material-survey-hero-v2.webp)
 
 ReBuild Loop helps demolition and renovation teams review useful building
 materials before they become mixed waste. A user uploads site photos, Gemini
@@ -61,6 +61,35 @@ flowchart LR
 
 Gemini never approves its own suggestion.
 
+## Where ADK fits
+
+ReBuild Loop includes a standalone coordinator built with the
+[Google Agent Development Kit for TypeScript](https://adk.dev/get-started/typescript/).
+It demonstrates how an agent can explain a validated material proposal, call a
+deterministic safety tool, and recommend the next review step.
+
+```mermaid
+flowchart LR
+    A["Validated material proposal"] --> B["ADK coordinator"]
+    B --> C["check_decision_gate tool"]
+    C --> D{"Required next step"}
+    D --> E["Request more evidence"]
+    D --> F["Send to a specialist"]
+    D --> G["Ready for human review"]
+    E --> H["Named reviewer decides"]
+    F --> H
+    G --> H
+```
+
+The ADK coordinator is intentionally isolated from project data. It has no
+database, object-storage, authentication, or write access and cannot approve a
+material or change a project. The production image-analysis path continues to
+use the durable worker and `@google/genai`. This keeps the current application
+stable while making the agent's reasoning and tool boundary easy to inspect.
+
+The implementation uses ADK's current TypeScript `LlmAgent` and `FunctionTool`
+APIs. See [`apps/adk`](apps/adk) for the agent, decision gate, and tests.
+
 ## What works today
 
 - Open email and password registration with Better Auth.
@@ -68,6 +97,7 @@ Gemini never approves its own suggestion.
 - Private image upload with browser hashing and server verification.
 - PostgreSQL-backed upload and analysis jobs.
 - Structured Gemini image analysis linked to source evidence.
+- Standalone ADK coordinator with a deterministic decision-gate tool.
 - Human accept, correct, reject, request-evidence, and specialist-review
   decisions.
 - Follow-up image analysis with linked, unchanged earlier revisions.
@@ -92,7 +122,7 @@ ReBuild Loop is not:
 | Area              | Technology                                      |
 | ----------------- | ----------------------------------------------- |
 | AI analysis       | Gemini Models through `@google/genai`           |
-| Agent workflow    | Google Agent Development Kit for TypeScript     |
+| Agent workflow    | Google ADK for TypeScript, isolated coordinator |
 | Web application   | Next.js, React, TypeScript, Tailwind CSS        |
 | Authentication    | Better Auth                                     |
 | Data              | PostgreSQL, Drizzle ORM                         |
@@ -134,6 +164,19 @@ Open:
 
 Docker starts the web application, worker, PostgreSQL, and S3-compatible object
 storage. Database migrations run when the web container starts.
+
+### Run the ADK coordinator
+
+The agent runs separately from the web application. From the repository root,
+set `GEMINI_API_KEY` in your shell, then choose either the terminal runner or
+the local ADK development interface:
+
+```bash
+pnpm adk:run
+pnpm adk:web
+```
+
+ADK Web is for local development and debugging only.
 
 ## Repository structure
 
