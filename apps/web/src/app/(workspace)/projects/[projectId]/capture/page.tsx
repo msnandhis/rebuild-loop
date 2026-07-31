@@ -10,6 +10,10 @@ import { listOpenProjectClarificationTasks } from "../../../../../lib/clarificat
 import { findOwnedProject } from "../../../../../lib/projects";
 import { requireSession } from "../../../../../lib/session";
 
+export const metadata = {
+  title: "Site evidence",
+};
+
 const CAPTURE_CHECKLIST = [
   "One wide site view",
   "Material and damage close-ups",

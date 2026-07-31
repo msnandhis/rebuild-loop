@@ -50,6 +50,7 @@ export const projects = pgTable(
     scaleNote: varchar("scale_note", { length: 240 }),
     status: projectStatus("status").default("DRAFT").notNull(),
     version: integer("version").default(1).notNull(),
+    archivedAt: timestamp("archived_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .defaultNow()
       .notNull(),

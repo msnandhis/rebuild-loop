@@ -13,6 +13,10 @@ import { listCandidates } from "../../../../../lib/candidates";
 import { findOwnedProject } from "../../../../../lib/projects";
 import { requireSession } from "../../../../../lib/session";
 
+export const metadata = {
+  title: "Review materials",
+};
+
 export default async function ReviewQueuePage({
   params,
 }: {

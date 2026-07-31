@@ -19,32 +19,10 @@ export async function SiteHeader() {
         </Link>
         <nav aria-label="Primary" className="flex items-center gap-1 sm:gap-3">
           <Link
-            className="hidden min-h-11 items-center px-2 text-sm font-semibold text-ink-muted transition-colors hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:inline-flex"
-            href="/method"
-          >
-            Method & limits
-          </Link>
-          {!session && (
-            <>
-              <Link
-                className="hidden min-h-11 items-center px-2 text-sm font-semibold text-ink-muted transition-colors hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:inline-flex"
-                href="/sign-in"
-              >
-                Sign in
-              </Link>
-              <Link
-                className="hidden min-h-11 items-center px-2 text-sm font-semibold text-ink-muted transition-colors hover:text-action focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus md:inline-flex"
-                href="/sign-up"
-              >
-                Create account
-              </Link>
-            </>
-          )}
-          <Link
             className="inline-flex min-h-11 items-center gap-2 rounded-full border border-action bg-action px-4 text-sm font-semibold text-white transition-colors hover:border-ink hover:bg-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
-            href={session ? "/projects" : "/projects/demo/review"}
+            href={session ? "/projects" : "/sign-in"}
           >
-            {session ? "Open projects" : "Open demo"}
+            {session ? "Open projects" : "Get started"}
             <ArrowRight aria-hidden="true" size={16} strokeWidth={1.75} />
           </Link>
         </nav>

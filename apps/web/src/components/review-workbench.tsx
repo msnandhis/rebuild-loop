@@ -295,7 +295,7 @@ export function ReviewWorkbench() {
                 >
                   {isComplete
                     ? "Decision preview complete."
-                    : "Demo only—nothing is saved."}
+                    : "Demo only. Nothing is saved."}
                 </p>
                 {isComplete ? (
                   <Link

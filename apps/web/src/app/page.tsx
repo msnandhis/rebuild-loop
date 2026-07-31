@@ -88,21 +88,21 @@ export default function HomePage() {
                 correct, and approve before useful items become mixed waste.
               </p>
               <div className="mt-7">
-                <ActionLink href="/projects/demo/review">
-                  Explore a sample review
+                <ActionLink href="/sign-in?demo=1">
+                  Explore app
                   <ArrowRight aria-hidden="true" size={17} strokeWidth={1.75} />
                 </ActionLink>
               </div>
             </div>
 
-            <figure className="overflow-hidden border border-rule bg-paper-subtle">
+            <figure className="overflow-hidden rounded-xl border border-rule bg-paper-subtle">
               <Image
-                alt="A surveyor inspecting an industrial building beside reusable timber, bricks, steel, and a salvaged door."
+                alt="A site reviewer photographing installed brick, steel, timber, glass, and lighting before renovation."
                 className="aspect-[16/10] h-full w-full object-cover"
                 height={1024}
                 priority
                 sizes="(min-width: 1024px) 58vw, 100vw"
-                src="/images/material-survey-hero.webp"
+                src="/images/material-survey-hero-v2.webp"
                 unoptimized
                 width={1536}
               />

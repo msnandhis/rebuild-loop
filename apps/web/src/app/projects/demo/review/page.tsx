@@ -1,7 +1,7 @@
 import { ReviewWorkbench } from "../../../../components/review-workbench";
 
 export const metadata = {
-  title: "Review workbench",
+  title: "Sample material review",
 };
 
 export default function DemoReviewPage() {
