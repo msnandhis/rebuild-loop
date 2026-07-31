@@ -25,15 +25,15 @@ importers:
   apps/adk:
     dependencies:
       '@google/adk':
-        specifier: 1.4.0
-        version: 1.4.0(@grpc/grpc-js@1.14.4)(@mikro-orm/mariadb@6.6.16(@mikro-orm/core@6.6.16)(pg@8.20.0))(@mikro-orm/mssql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/mysql@6.6.16(@mikro-orm/core@6.6.16)(@types/node@24.10.1)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/postgresql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5))(@mikro-orm/sqlite@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)
+        specifier: 1.5.0
+        version: 1.5.0(@grpc/grpc-js@1.14.4)(@mikro-orm/mariadb@6.6.16(@mikro-orm/core@6.6.16)(pg@8.20.0))(@mikro-orm/mssql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/mysql@6.6.16(@mikro-orm/core@6.6.16)(@types/node@24.10.1)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/postgresql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5))(@mikro-orm/sqlite@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)
       zod:
         specifier: 4.4.3
         version: 4.4.3
     devDependencies:
       '@google/adk-devtools':
-        specifier: 1.4.0
-        version: 1.4.0(@grpc/grpc-js@1.14.4)(@mikro-orm/core@6.6.16)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(@types/node@24.10.1)(encoding@0.1.13)(mariadb@3.4.5)(pg@8.20.0)
+        specifier: 1.5.0
+        version: 1.5.0(@grpc/grpc-js@1.14.4)(@mikro-orm/core@6.6.16)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(@types/node@24.10.1)(encoding@0.1.13)(mariadb@3.4.5)(pg@8.20.0)
       '@types/node':
         specifier: 24.10.1
         version: 24.10.1
@@ -1056,12 +1056,12 @@ packages:
     resolution: {integrity: sha512-XMJIk7GIeavFLP5A3YEUlowKa5Y5PZRrnnuTJcqR0k+lFKkv7+IWpdRp+Xbqb8xNDrvQaE2hP2RYPUylyD5EdA==}
     engines: {node: '>=18.0.0'}
 
-  '@google/adk-devtools@1.4.0':
-    resolution: {integrity: sha512-vwoAwZeUNR6bZ0vGlevnVL6kXsCsIcpINssIkyGAB+zd4UR+kv3frFYvXvONpz6AQXj5Q2KHToRf53T7MPsIvQ==}
+  '@google/adk-devtools@1.5.0':
+    resolution: {integrity: sha512-e00LLU6cyJCxzTuYWbliWpLJZCSltwxO2EcySjCMMtm73x/Zyl073cHnyRE+klY+Sxj9BUSCU4+BTl559X7qbg==}
     hasBin: true
 
-  '@google/adk@1.4.0':
-    resolution: {integrity: sha512-Q4nFPWCtx12mXtFEBy6TnNsmsBLDZj62J9zoUEh7ZOtaSweXQKpUvoqexDtbp9ddyYowecNmJPHadCDDaoZlMg==}
+  '@google/adk@1.5.0':
+    resolution: {integrity: sha512-DwgdpKeDJ7V+VQK9VZNpvYVXLLJ7xURfvA3nq5zWkwlioFUEbNwh0STDnLmJy0swmqKXgEeymjKNMrlc3eVY9g==}
     peerDependencies:
       '@mikro-orm/mariadb': ^6.6.6
       '@mikro-orm/mssql': ^6.6.6
@@ -6036,10 +6036,10 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@google/adk-devtools@1.4.0(@grpc/grpc-js@1.14.4)(@mikro-orm/core@6.6.16)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(@types/node@24.10.1)(encoding@0.1.13)(mariadb@3.4.5)(pg@8.20.0)':
+  '@google/adk-devtools@1.5.0(@grpc/grpc-js@1.14.4)(@mikro-orm/core@6.6.16)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(@types/node@24.10.1)(encoding@0.1.13)(mariadb@3.4.5)(pg@8.20.0)':
     dependencies:
       '@clack/prompts': 0.11.0
-      '@google/adk': 1.4.0(@grpc/grpc-js@1.14.4)(@mikro-orm/mariadb@6.6.16(@mikro-orm/core@6.6.16)(pg@8.20.0))(@mikro-orm/mssql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/mysql@6.6.16(@mikro-orm/core@6.6.16)(@types/node@24.10.1)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/postgresql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5))(@mikro-orm/sqlite@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)
+      '@google/adk': 1.5.0(@grpc/grpc-js@1.14.4)(@mikro-orm/mariadb@6.6.16(@mikro-orm/core@6.6.16)(pg@8.20.0))(@mikro-orm/mssql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/mysql@6.6.16(@mikro-orm/core@6.6.16)(@types/node@24.10.1)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/postgresql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5))(@mikro-orm/sqlite@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)
       '@mikro-orm/mariadb': 6.6.16(@mikro-orm/core@6.6.16)(pg@8.20.0)
       '@mikro-orm/mssql': 6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0)
       '@mikro-orm/mysql': 6.6.16(@mikro-orm/core@6.6.16)(@types/node@24.10.1)(mariadb@3.4.5)(pg@8.20.0)
@@ -6080,7 +6080,7 @@ snapshots:
       - tedious
       - utf-8-validate
 
-  '@google/adk@1.4.0(@grpc/grpc-js@1.14.4)(@mikro-orm/mariadb@6.6.16(@mikro-orm/core@6.6.16)(pg@8.20.0))(@mikro-orm/mssql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/mysql@6.6.16(@mikro-orm/core@6.6.16)(@types/node@24.10.1)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/postgresql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5))(@mikro-orm/sqlite@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)':
+  '@google/adk@1.5.0(@grpc/grpc-js@1.14.4)(@mikro-orm/mariadb@6.6.16(@mikro-orm/core@6.6.16)(pg@8.20.0))(@mikro-orm/mssql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/mysql@6.6.16(@mikro-orm/core@6.6.16)(@types/node@24.10.1)(mariadb@3.4.5)(pg@8.20.0))(@mikro-orm/postgresql@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5))(@mikro-orm/sqlite@6.6.16(@mikro-orm/core@6.6.16)(mariadb@3.4.5)(pg@8.20.0))(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)':
     dependencies:
       '@a2a-js/sdk': 0.3.14(@grpc/grpc-js@1.14.4)(express@4.22.2)
       '@google-cloud/opentelemetry-cloud-monitoring-exporter': 0.21.0(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/resources@2.10.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-metrics@2.10.0(@opentelemetry/api@1.9.0))(encoding@0.1.13)

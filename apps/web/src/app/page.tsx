@@ -149,7 +149,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="bg-canvas" id="how-it-works">
+        <section className="scroll-mt-16 bg-canvas" id="how-it-works">
           <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
             <div className="grid gap-8 border-b border-rule pb-10 md:grid-cols-[0.7fr_1.3fr]">
               <p className="font-mono text-xs font-medium tracking-[0.16em] text-action uppercase">
@@ -194,7 +194,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="bg-paper">
+        <section className="scroll-mt-16 bg-paper" id="materials">
           <div className="mx-auto max-w-7xl px-5 py-16 md:px-8 md:py-24">
             <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div>
@@ -252,7 +252,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="border-t border-rule bg-brand-light">
+        <section
+          className="scroll-mt-16 border-t border-rule bg-brand-light"
+          id="sample-review"
+        >
           <div className="mx-auto grid max-w-7xl gap-8 px-5 py-16 md:grid-cols-[1fr_auto] md:items-center md:px-8 md:py-20">
             <div>
               <p className="font-mono text-xs font-medium tracking-[0.16em] text-action uppercase">
