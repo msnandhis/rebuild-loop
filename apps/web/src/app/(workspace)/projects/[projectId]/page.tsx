@@ -11,6 +11,10 @@ import {
 } from "../../../../lib/projects";
 import { requireSession } from "../../../../lib/session";
 
+export const metadata = {
+  title: "Site brief",
+};
+
 export default async function ProjectPage({
   params,
 }: {

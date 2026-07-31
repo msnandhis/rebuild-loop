@@ -92,6 +92,7 @@ ReBuild Loop is not:
 | Area              | Technology                                      |
 | ----------------- | ----------------------------------------------- |
 | AI analysis       | Gemini Models through `@google/genai`           |
+| Agent workflow    | Google Agent Development Kit for TypeScript     |
 | Web application   | Next.js, React, TypeScript, Tailwind CSS        |
 | Authentication    | Better Auth                                     |
 | Data              | PostgreSQL, Drizzle ORM                         |
@@ -138,6 +139,7 @@ storage. Database migrations run when the web container starts.
 
 ```text
 apps/
+  adk/          Isolated Gemini agent and deterministic decision gate
   web/          Next.js interface and API routes
   worker/       Upload verification and Gemini analysis jobs
 packages/

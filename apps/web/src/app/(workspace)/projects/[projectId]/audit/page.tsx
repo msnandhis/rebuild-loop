@@ -9,6 +9,10 @@ import { findOwnedProject } from "../../../../../lib/projects";
 import { listProjectAuditEvents } from "../../../../../lib/recovery";
 import { requireSession } from "../../../../../lib/session";
 
+export const metadata = {
+  title: "Decision history",
+};
+
 export default async function ProjectAuditPage({
   params,
 }: {

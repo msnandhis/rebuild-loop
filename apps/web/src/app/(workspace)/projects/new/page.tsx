@@ -1,7 +1,7 @@
 import { NewProjectForm } from "../../../../components/projects/new-project-form";
 
 export const metadata = {
-  title: "New project",
+  title: "Create project",
 };
 
 export default function NewProjectPage() {

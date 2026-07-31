@@ -86,7 +86,7 @@ export function ProjectStageRail({
               ) : (
                 <span
                   className="flex min-h-10 cursor-default items-center gap-2 border-b-2 border-transparent px-3 text-[12px] font-medium whitespace-nowrap text-ink-muted/60"
-                  title={`${stage.name} — ${blockingReason(index)}`}
+                  title={`${stage.name}: ${blockingReason(index)}`}
                 >
                   {inner}
                 </span>

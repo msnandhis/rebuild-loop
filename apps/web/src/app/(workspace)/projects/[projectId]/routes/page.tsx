@@ -16,6 +16,10 @@ import {
 } from "../../../../../lib/recovery";
 import { requireSession } from "../../../../../lib/session";
 
+export const metadata = {
+  title: "Recovery routes",
+};
+
 export default async function RecoveryRoutesPage({
   params,
 }: {
@@ -75,7 +79,7 @@ export default async function RecoveryRoutesPage({
         ) : !sheets.length ? (
           <EmptyState>
             Apply the current rule version to expose every passed and blocked
-            gate. The calculation is repeatable — a changed decision produces a
+            gate. The calculation is repeatable. A changed decision produces a
             new source hash and needs a fresh assessment.
           </EmptyState>
         ) : (
@@ -147,7 +151,7 @@ export default async function RecoveryRoutesPage({
                             <p className="text-[13px] leading-5">
                               <span className="font-medium">{gate.label}</span>
                               <span className="text-ink-muted">
-                                {" — "}
+                                {": "}
                                 {isBlocked ? gate.reason : "passed"}
                               </span>
                             </p>

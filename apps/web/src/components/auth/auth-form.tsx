@@ -3,7 +3,7 @@
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { authClient } from "../../lib/auth-client";
 
@@ -14,11 +14,13 @@ const DEMO_EMAIL = "nandy@rebuildloop.com";
 const DEMO_PASSWORD = "nandy@rebuildloop.com";
 
 interface AuthFormProps {
+  autoDemo?: boolean;
   mode: AuthMode;
 }
 
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ autoDemo = false, mode }: AuthFormProps) {
   const router = useRouter();
+  const autoDemoStarted = useRef(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -35,7 +37,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const isSignUp = mode === "sign-up";
   const authPending = isSubmitting || isDemoSigningIn;
 
-  async function handleDemoSignIn() {
+  const handleDemoSignIn = useCallback(async () => {
     setError(null);
     setFieldErrors({});
     setIsDemoSigningIn(true);
@@ -63,7 +65,16 @@ export function AuthForm({ mode }: AuthFormProps) {
     } finally {
       setIsDemoSigningIn(false);
     }
-  }
+  }, [router]);
+
+  useEffect(() => {
+    if (!autoDemo || autoDemoStarted.current) {
+      return;
+    }
+
+    autoDemoStarted.current = true;
+    void handleDemoSignIn();
+  }, [autoDemo, handleDemoSignIn]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

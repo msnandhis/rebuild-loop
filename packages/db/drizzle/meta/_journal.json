@@ -43,6 +43,13 @@
       "when": 1785413223100,
       "tag": "0005_ancient_kinsey_walden",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1785437417433,
+      "tag": "0006_shallow_inertia",
+      "breakpoints": true
     }
   ]
 }

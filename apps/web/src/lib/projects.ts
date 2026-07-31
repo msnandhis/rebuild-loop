@@ -1,14 +1,16 @@
 import "server-only";
 
 import { analysisRuns, auditEvents, getDatabase, projects } from "@rebuild/db";
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { cache } from "react";
 
 export async function listProjects(ownerUserId: string) {
   return getDatabase()
     .select()
     .from(projects)
-    .where(eq(projects.ownerUserId, ownerUserId))
+    .where(
+      and(eq(projects.ownerUserId, ownerUserId), isNull(projects.archivedAt)),
+    )
     .orderBy(desc(projects.updatedAt));
 }
 
@@ -24,7 +26,11 @@ export const findOwnedProject = cache(
       .select()
       .from(projects)
       .where(
-        and(eq(projects.id, projectId), eq(projects.ownerUserId, ownerUserId)),
+        and(
+          eq(projects.id, projectId),
+          eq(projects.ownerUserId, ownerUserId),
+          isNull(projects.archivedAt),
+        ),
       )
       .limit(1);
 

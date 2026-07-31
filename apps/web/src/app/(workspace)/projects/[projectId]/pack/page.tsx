@@ -22,6 +22,10 @@ import {
 } from "../../../../../lib/recovery";
 import { requireSession } from "../../../../../lib/session";
 
+export const metadata = {
+  title: "Recovery plan",
+};
+
 export default async function RecoveryPackPage({
   params,
 }: {
@@ -176,7 +180,7 @@ export default async function RecoveryPackPage({
         The pack links every instruction to a confirmed material revision and a
         deterministic route sheet, and the source hash prevents an old pack from
         surviving changed decisions. Approval records your name and timestamp
-        against this preliminary workflow record — it does not confirm material
+        against this preliminary workflow record. It does not confirm material
         fitness or compliance, and a qualified professional must resolve
         safety-critical unknowns before any reuse.
       </LimitationNote>

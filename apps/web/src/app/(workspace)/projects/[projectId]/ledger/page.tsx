@@ -15,6 +15,10 @@ import {
 } from "../../../../../lib/recovery";
 import { requireSession } from "../../../../../lib/session";
 
+export const metadata = {
+  title: "Materials ledger",
+};
+
 export default async function MaterialLedgerPage({
   params,
 }: {
@@ -42,7 +46,7 @@ export default async function MaterialLedgerPage({
             }
           >
             No confirmed lots yet. Accept or correct a proposal in review to
-            create one — proposals never enter this ledger on their own.
+            create one. Proposals never enter this ledger on their own.
           </EmptyState>
         </Panel>
       </div>
@@ -176,7 +180,7 @@ function quantityLabel(item: MaterialLedgerItem) {
   if (typeof min === "number" && typeof max === "number") {
     return min === max ? `${min} ${unit}` : `${min}–${max} ${unit}`;
   }
-  return "—";
+  return "Not set";
 }
 
 function label(value: string) {

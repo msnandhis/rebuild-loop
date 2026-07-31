@@ -53,7 +53,7 @@ export default async function ProjectsPage() {
               </div>
             }
           >
-            No projects yet. Start with a short site brief — ReBuild Loop then
+            No projects yet. Start with a short site brief. ReBuild Loop then
             guides the evidence needed before material review can begin.
           </EmptyState>
         ) : (

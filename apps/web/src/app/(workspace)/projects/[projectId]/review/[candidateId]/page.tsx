@@ -18,6 +18,10 @@ import { findOwnedProject } from "../../../../../../lib/projects";
 import { listReviewDecisions } from "../../../../../../lib/review-decisions";
 import { requireSession } from "../../../../../../lib/session";
 
+export const metadata = {
+  title: "Review material",
+};
+
 export default async function CandidateReviewPage({
   params,
 }: {

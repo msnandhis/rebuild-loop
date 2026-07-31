@@ -3,6 +3,10 @@ import { AlertTriangle, CheckCircle2, CircleDashed } from "lucide-react";
 import { SiteFooter } from "../../components/site-footer";
 import { SiteHeader } from "../../components/site-header";
 
+export const metadata = {
+  title: "Method and limits",
+};
+
 const principles = [
   {
     icon: CheckCircle2,
@@ -12,7 +16,7 @@ const principles = [
   {
     icon: CircleDashed,
     title: "Uncertainty stays visible",
-    body: "Confidence is expressed as a reason and required next action—not a decorative percentage that implies more certainty than exists.",
+    body: "Confidence is expressed as a reason and required next action, not a decorative percentage that implies more certainty than exists.",
   },
   {
     icon: AlertTriangle,
@@ -32,7 +36,7 @@ export default function MethodPage() {
               Method note / rev 0.1
             </p>
             <h1 className="mt-5 max-w-3xl font-heading text-4xl leading-tight font-bold tracking-[-0.04em] md:text-5xl">
-              What ReBuild Loop can support—and what it cannot decide.
+              What ReBuild Loop can support, and what it cannot decide.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-ink-muted">
               The product helps teams organise evidence and prepare recovery
@@ -70,7 +74,7 @@ export default function MethodPage() {
                 {[
                   "Model proposals may misidentify material, condition, connection, or quantity.",
                   "Visual evidence cannot establish hidden contamination, structural capacity, or legal compliance.",
-                  "Demand matches in the demonstration are synthetic—not live offers or guaranteed transactions.",
+                  "Demand matches in the demonstration are synthetic, not live offers or guaranteed transactions.",
                   "Potential impact is a transparent scenario estimate, not a verified environmental claim.",
                   "Approved outputs must retain source evidence, rule version, reviewer, date, and stated limitations.",
                 ].map((item, index) => (

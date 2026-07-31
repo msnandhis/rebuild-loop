@@ -7,6 +7,8 @@
     "node": "24.18.0"
   },
   "scripts": {
+    "adk:run": "pnpm --filter @rebuild/adk dev",
+    "adk:web": "pnpm --filter @rebuild/adk web",
     "build": "turbo run build",
     "clean": "turbo run clean && rm -rf .turbo",
     "dev": "turbo run dev --parallel",

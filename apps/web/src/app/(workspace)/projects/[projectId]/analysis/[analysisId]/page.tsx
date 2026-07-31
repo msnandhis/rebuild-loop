@@ -5,6 +5,10 @@ import { LimitationNote } from "../../../../../../components/workspace/limitatio
 import { findOwnedProject } from "../../../../../../lib/projects";
 import { requireSession } from "../../../../../../lib/session";
 
+export const metadata = {
+  title: "Analysis progress",
+};
+
 export default async function AnalysisPage({
   params,
 }: {
