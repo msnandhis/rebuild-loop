@@ -10,12 +10,10 @@ export interface ServiceHealth {
 }
 
 export const PROJECT_STAGES = [
-  "site-brief",
-  "capture",
+  "overview",
+  "evidence",
   "review",
-  "materials-ledger",
-  "recovery-routes",
-  "recovery-pack",
+  "recovery-plan",
 ] as const;
 
 export type ProjectStage = (typeof PROJECT_STAGES)[number];

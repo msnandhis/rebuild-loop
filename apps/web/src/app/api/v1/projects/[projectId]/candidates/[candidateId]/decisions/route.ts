@@ -13,6 +13,15 @@ import {
   ReviewNotFoundError,
   ReviewValidationError,
 } from "../../../../../../../../lib/review-decisions";
+import {
+  isFinalReviewDecision,
+  listCandidates,
+} from "../../../../../../../../lib/candidates";
+import {
+  calculatePathways,
+  createRecoveryPlan,
+  RecoveryValidationError,
+} from "../../../../../../../../lib/recovery";
 
 const bodySchema = z.object({
   action: z.enum(["CONFIRMED", "CORRECTED", "REJECTED", "SPECIALIST_REVIEW"]),
@@ -71,11 +80,36 @@ export async function POST(
       reason: parsed.data.reason,
       sourceRevisionId: parsed.data.revisionId,
     });
+    let recoveryPlanPrepared = false;
+    if (!result.replayed) {
+      try {
+        await calculatePathways(projectId, user.id);
+        const candidates = await listCandidates(projectId, user.id);
+        const reviewComplete =
+          candidates.length > 0 &&
+          candidates.every((candidate) =>
+            isFinalReviewDecision(candidate.latest_decision_action),
+          );
+        if (reviewComplete) {
+          await createRecoveryPlan(projectId, user.id);
+          recoveryPlanPrepared = true;
+        }
+      } catch (error) {
+        if (!(error instanceof RecoveryValidationError)) {
+          console.error("Automatic recovery plan refresh failed", {
+            correlationId,
+            error,
+            projectId,
+          });
+        }
+      }
+    }
     return apiJson(
       {
         correlationId,
         decisionId: result.decision.id,
         inventoryRevisionId: result.inventoryRevisionId,
+        recoveryPlanPrepared,
         replayed: result.replayed,
       },
       result.replayed ? 200 : 201,

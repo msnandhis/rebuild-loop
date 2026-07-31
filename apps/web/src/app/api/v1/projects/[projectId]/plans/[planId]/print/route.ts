@@ -15,22 +15,22 @@ export async function GET(
   if (!user) {
     return apiProblem(
       401,
-      "Sign in to print the recovery pack.",
+      "Sign in to print the recovery plan.",
       correlationId,
     );
   }
   const { planId, projectId } = await context.params;
   if (!isUuid(projectId) || !isUuid(planId)) {
-    return apiProblem(404, "Approved recovery pack not found.", correlationId);
+    return apiProblem(404, "Approved recovery plan not found.", correlationId);
   }
   const project = await findOwnedProject(projectId, user.id);
   if (!project) {
-    return apiProblem(404, "Approved recovery pack not found.", correlationId);
+    return apiProblem(404, "Approved recovery plan not found.", correlationId);
   }
 
   const plan = await findCurrentRecoveryPlan(projectId, user.id);
   if (!plan || plan.id !== planId) {
-    return apiProblem(404, "Approved recovery pack not found.", correlationId);
+    return apiProblem(404, "Approved recovery plan not found.", correlationId);
   }
   if (plan.status !== "APPROVED") {
     return apiProblem(
@@ -44,7 +44,7 @@ export async function GET(
   return new Response(renderPrintDocument(project, plan), {
     headers: {
       "Cache-Control": "no-store, private",
-      "Content-Disposition": `inline; filename="${safeFilename(project.code)}-recovery-pack.html"`,
+      "Content-Disposition": `inline; filename="${safeFilename(project.code)}-recovery-plan.html"`,
       "Content-Security-Policy":
         "default-src 'none'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'none'; frame-ancestors 'self'",
       "Content-Type": "text/html; charset=utf-8",
@@ -89,7 +89,7 @@ function renderPrintDocument(
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${escapeHtml(project.code)} recovery pack</title>
+  <title>${escapeHtml(project.code)} recovery plan</title>
   <style>
     :root { --ink:#12131a; --muted:#52545e; --rule:#8b8d96; --paper:#fff; --wash:#f6f6f7; --verified:#087a55; }
     * { box-sizing:border-box; }
@@ -147,7 +147,7 @@ function renderPrintDocument(
     <p>${escapeHtml(plan.approvedBy ?? userFallback())} · ${escapeHtml(approvalDate)}</p>
     <p class="mono muted">Source ${escapeHtml(plan.sourceHash)}</p>
   </section>
-  <p class="notice">This pack records preliminary recovery planning. A qualified professional must resolve safety-critical unknowns and approve reuse in its actual project context.</p>
+  <p class="notice">This plan records preliminary recovery planning. A qualified professional must resolve safety-critical unknowns and approve reuse in its actual project context.</p>
 </main>
 </body>
 </html>`;

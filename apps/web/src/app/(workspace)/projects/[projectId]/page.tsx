@@ -12,7 +12,7 @@ import {
 import { requireSession } from "../../../../lib/session";
 
 export const metadata = {
-  title: "Site brief",
+  title: "Project overview",
 };
 
 export default async function ProjectPage({
@@ -61,7 +61,7 @@ export default async function ProjectPage({
             className="border-b border-rule px-4 py-3 text-[13px] font-semibold"
             id="site-brief"
           >
-            Site brief
+            Project details
           </h2>
           <dl className="divide-y divide-rule">
             <BriefRow label="Project type" value={projectType(project.type)} />
@@ -73,10 +73,9 @@ export default async function ProjectPage({
       </section>
 
       <LimitationNote>
-        Review and every downstream stage unlock only once their source evidence
-        exists. ReBuild Loop records preliminary recovery planning; it does not
-        certify material fitness, and a qualified professional must resolve
-        safety-critical unknowns before any reuse.
+        ReBuild Loop supports preliminary recovery planning. It does not certify
+        material fitness, and a qualified professional must resolve
+        safety-critical unknowns before reuse.
       </LimitationNote>
     </div>
   );
@@ -129,20 +128,21 @@ function nextAction(
       };
     case "INVENTORY_CONFIRMED":
       return {
-        action: "Open ledger",
-        description: "Confirmed lots are ready for route calculation.",
-        href: `/projects/${projectId}/ledger`,
+        action: "Review the recovery plan",
+        description:
+          "Confirmed materials and their recommended actions are ready to review.",
+        href: `/projects/${projectId}/pack`,
       };
     case "PLAN_DRAFTED":
       return {
-        action: "Open pack",
+        action: "Review the recovery plan",
         description: "A recovery plan is drafted and awaiting your approval.",
         href: `/projects/${projectId}/pack`,
       };
     case "APPROVED":
       return {
-        action: "Open pack",
-        description: "The recovery pack is approved and ready to print.",
+        action: "Open the recovery plan",
+        description: "The recovery plan is approved and ready to print.",
         href: `/projects/${projectId}/pack`,
       };
     case "DRAFT":

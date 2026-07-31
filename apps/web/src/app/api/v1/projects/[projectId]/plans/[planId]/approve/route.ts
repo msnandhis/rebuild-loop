@@ -21,7 +21,7 @@ export async function POST(
   if (!user) {
     return apiProblem(
       401,
-      "Sign in to approve the recovery pack.",
+      "Sign in to approve the recovery plan.",
       correlationId,
     );
   }
@@ -54,7 +54,7 @@ export async function POST(
     }
     return apiProblem(
       503,
-      "The recovery pack could not be approved. The draft was retained.",
+      "The recovery plan could not be approved. The current plan is unchanged.",
       correlationId,
     );
   }

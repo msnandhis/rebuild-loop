@@ -349,12 +349,12 @@ export async function calculatePathways(
 
   if (!inventory.length) {
     throw new RecoveryValidationError(
-      "Confirm at least one material lot before calculating pathways.",
+      "Confirm at least one material before preparing recommended actions.",
     );
   }
 
   const rulesHash = sha256(JSON.stringify(RULE_DEFINITION));
-  const [ruleVersion] = await sql<{ id: string }[]>`
+  await sql`
     insert into recovery_rule_versions (
       version, description, rules, rules_hash, active
     ) values (
@@ -364,11 +364,20 @@ export async function calculatePathways(
       ${rulesHash},
       true
     )
-    on conflict (version) do update
-      set active = true
-    returning id
+    on conflict (version) do nothing
+  `;
+  const [ruleVersion] = await sql<{ id: string; rules_hash: string }[]>`
+    select id, rules_hash
+    from recovery_rule_versions
+    where version = ${RULE_VERSION}
+    limit 1
   `;
   if (!ruleVersion) throw new Error("Recovery rule version is unavailable");
+  if (ruleVersion.rules_hash !== rulesHash) {
+    throw new Error(
+      "The stored recovery rule does not match the current rule definition.",
+    );
+  }
 
   let blocked = 0;
   for (const row of inventory) {
@@ -536,23 +545,16 @@ export async function createRecoveryPlan(
   const inventory = await listConfirmedInventory(projectId, ownerUserId);
   if (!inventory.length) {
     throw new RecoveryValidationError(
-      "Confirm at least one material lot before drafting a pack.",
+      "Confirm at least one material before preparing the recovery plan.",
     );
   }
   if (assessments.length !== inventory.length) {
     throw new RecoveryValidationError(
-      "Calculate pathways for every confirmed lot before drafting a pack.",
+      "Prepare a recommended action for every confirmed material before creating the recovery plan.",
     );
   }
 
-  const sourceHash = sha256(
-    canonicalJson(
-      assessments.map((item) => ({
-        assessmentId: item.id,
-        inventoryRevisionId: item.inventoryRevisionId,
-      })),
-    ),
-  );
+  const sourceHash = recoveryPlanSourceHash(assessments);
   const [existing] = await sql<{ id: string }[]>`
     select id
     from recovery_plans
@@ -707,6 +709,23 @@ export async function approveRecoveryPlan(
 export class RecoveryValidationError extends Error {}
 export class RecoveryConflictError extends Error {}
 export class RecoveryNotFoundError extends Error {}
+
+export function recoveryPlanSourceHash(
+  assessments: Array<Pick<PathwaySheet, "id" | "inventoryRevisionId">>,
+) {
+  return sha256(
+    canonicalJson(
+      [...assessments]
+        .sort((left, right) =>
+          left.inventoryRevisionId.localeCompare(right.inventoryRevisionId),
+        )
+        .map((item) => ({
+          assessmentId: item.id,
+          inventoryRevisionId: item.inventoryRevisionId,
+        })),
+    ),
+  );
+}
 
 const RULE_VERSION = "RBL-SAFE-2026.1";
 const RULE_DEFINITION = {

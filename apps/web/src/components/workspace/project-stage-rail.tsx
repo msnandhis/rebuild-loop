@@ -1,38 +1,22 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Check, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const STAGES = [
-  { key: "brief", label: "Brief", name: "Site brief" },
-  { key: "capture", label: "Capture", name: "Capture" },
-  { key: "review", label: "Review", name: "Review" },
-  { key: "ledger", label: "Ledger", name: "Materials ledger" },
-  { key: "routes", label: "Routes", name: "Recovery routes" },
-  { key: "pack", label: "Pack", name: "Recovery pack" },
+  { key: "overview", label: "Overview", name: "Project overview" },
+  { key: "evidence", label: "Evidence", name: "Site evidence" },
+  { key: "review", label: "Review", name: "Review materials" },
+  { key: "plan", label: "Recovery plan", name: "Recovery plan" },
 ] as const;
 
 type StageKey = (typeof STAGES)[number]["key"];
 
-/**
- * The single stage indicator for a project.
- *
- * Derives the active stage from the pathname so no page has to declare its own
- * position, and so nested routes (an analysis run, a candidate, the audit
- * trail) resolve to the stage they belong to.
- */
-export function ProjectStageRail({
-  projectId,
-  projectStatus,
-}: {
-  projectId: string;
-  projectStatus: string;
-}) {
+export function ProjectStageRail({ projectId }: { projectId: string }) {
   const pathname = usePathname();
   const current = currentStage(pathname, projectId);
   const currentIndex = STAGES.findIndex((stage) => stage.key === current);
-  const unlockedThrough = unlockedStages(projectStatus);
 
   return (
     <nav aria-label="Project stages">
@@ -40,8 +24,6 @@ export function ProjectStageRail({
         {STAGES.map((stage, index) => {
           const isCurrent = stage.key === current;
           const isDone = currentIndex >= 0 && index < currentIndex;
-          const isUnlocked = index < unlockedThrough || isCurrent;
-
           const marker = isDone ? (
             <Check
               aria-hidden="true"
@@ -54,43 +36,26 @@ export function ProjectStageRail({
               aria-hidden="true"
               className="size-1.5 rounded-full bg-action"
             />
-          ) : isUnlocked ? null : (
-            <Lock aria-hidden="true" size={11} strokeWidth={1.75} />
-          );
-
-          const inner = (
-            <>
-              {marker ? (
-                <span className="flex w-4 shrink-0 justify-center">
-                  {marker}
-                </span>
-              ) : null}
-              {stage.label}
-            </>
-          );
+          ) : null;
 
           return (
             <li key={stage.key}>
-              {isUnlocked ? (
-                <Link
-                  aria-current={isCurrent ? "page" : undefined}
-                  className={`flex min-h-10 items-center gap-2 border-b-2 px-3 text-[12px] font-semibold whitespace-nowrap transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-focus ${
-                    isCurrent
-                      ? "border-action text-ink"
-                      : "border-transparent text-ink-muted hover:text-ink"
-                  }`}
-                  href={stageHref(projectId, stage.key)}
-                >
-                  {inner}
-                </Link>
-              ) : (
-                <span
-                  className="flex min-h-10 cursor-default items-center gap-2 border-b-2 border-transparent px-3 text-[12px] font-medium whitespace-nowrap text-ink-muted/60"
-                  title={`${stage.name}: ${blockingReason(index)}`}
-                >
-                  {inner}
-                </span>
-              )}
+              <Link
+                aria-current={isCurrent ? "page" : undefined}
+                className={`flex min-h-11 items-center gap-2 border-b-2 px-3 text-[12px] font-semibold whitespace-nowrap transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-focus ${
+                  isCurrent
+                    ? "border-action text-ink"
+                    : "border-transparent text-ink-muted hover:text-ink"
+                }`}
+                href={stageHref(projectId, stage.key)}
+              >
+                {marker ? (
+                  <span className="flex w-4 shrink-0 justify-center">
+                    {marker}
+                  </span>
+                ) : null}
+                {stage.label}
+              </Link>
             </li>
           );
         })}
@@ -99,23 +64,10 @@ export function ProjectStageRail({
   );
 }
 
-/**
- * A quiet end-of-page continuation for the same stages shown in the rail.
- *
- * Page-specific actions still own the primary workflow decision. This pager
- * only removes the need to scroll back to the rail after a stage is complete.
- */
-export function ProjectStagePager({
-  projectId,
-  projectStatus,
-}: {
-  projectId: string;
-  projectStatus: string;
-}) {
+export function ProjectStagePager({ projectId }: { projectId: string }) {
   const pathname = usePathname();
   const current = currentStage(pathname, projectId);
   const currentIndex = STAGES.findIndex((stage) => stage.key === current);
-  const unlockedThrough = unlockedStages(projectStatus);
 
   if (currentIndex < 0) {
     return null;
@@ -123,7 +75,6 @@ export function ProjectStagePager({
 
   const previous = STAGES[currentIndex - 1];
   const next = STAGES[currentIndex + 1];
-  const nextIsUnlocked = next ? currentIndex + 1 < unlockedThrough : false;
 
   return (
     <nav
@@ -142,34 +93,11 @@ export function ProjectStagePager({
         )}
 
         {next ? (
-          nextIsUnlocked ? (
-            <StagePagerLink
-              direction="next"
-              href={stageHref(projectId, next.key)}
-              name={next.name}
-            />
-          ) : (
-            <span
-              aria-disabled="true"
-              className="flex min-h-12 min-w-0 max-w-[18rem] cursor-not-allowed items-center justify-end gap-3 rounded-lg border border-rule bg-paper-subtle px-3 py-2 text-right text-ink-muted/70"
-              role="link"
-            >
-              <span className="min-w-0">
-                <span className="block text-[11px] font-medium">
-                  Next step locked
-                </span>
-                <span className="block text-sm font-semibold text-ink-muted">
-                  {blockingReason(currentIndex + 1)}
-                </span>
-              </span>
-              <Lock
-                aria-hidden="true"
-                className="shrink-0"
-                size={16}
-                strokeWidth={1.75}
-              />
-            </span>
-          )
+          <StagePagerLink
+            direction="next"
+            href={stageHref(projectId, next.key)}
+            name={next.name}
+          />
         ) : null}
       </div>
     </nav>
@@ -221,9 +149,16 @@ function StagePagerLink({
 }
 
 function stageHref(projectId: string, stage: StageKey) {
-  return stage === "brief"
-    ? `/projects/${projectId}`
-    : `/projects/${projectId}/${stage}`;
+  switch (stage) {
+    case "overview":
+      return `/projects/${projectId}`;
+    case "evidence":
+      return `/projects/${projectId}/capture`;
+    case "review":
+      return `/projects/${projectId}/review`;
+    case "plan":
+      return `/projects/${projectId}/pack`;
+  }
 }
 
 function currentStage(pathname: string, projectId: string): StageKey | null {
@@ -234,42 +169,18 @@ function currentStage(pathname: string, projectId: string): StageKey | null {
 
   switch (segment) {
     case undefined:
-      return "brief";
-    // An analysis run is the tail of capture, and the audit trail is reached
-    // from the pack, so both keep their originating stage marked.
+      return "overview";
     case "analysis":
     case "capture":
-      return "capture";
+      return "evidence";
     case "review":
       return "review";
-    case "ledger":
-      return "ledger";
-    case "routes":
-      return "routes";
     case "audit":
+    case "ledger":
     case "pack":
-      return "pack";
+    case "routes":
+      return "plan";
     default:
       return null;
   }
-}
-
-function unlockedStages(status: string): number {
-  switch (status) {
-    case "APPROVED":
-    case "PLAN_DRAFTED":
-      return 6;
-    case "INVENTORY_CONFIRMED":
-      return 5;
-    case "REVIEW_REQUIRED":
-      return 4;
-    default:
-      return 3;
-  }
-}
-
-function blockingReason(index: number): string {
-  if (index === 3) return "accept a proposal in review first";
-  if (index === 4) return "confirm a material lot first";
-  return "calculate recovery routes first";
 }

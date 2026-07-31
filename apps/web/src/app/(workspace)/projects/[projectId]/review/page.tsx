@@ -9,7 +9,10 @@ import { EmptyState } from "../../../../../components/workspace/empty-state";
 import { LimitationNote } from "../../../../../components/workspace/limitation-note";
 import { Panel } from "../../../../../components/workspace/panel";
 import { findLatestProjectAnalysis } from "../../../../../lib/analyses";
-import { listCandidates } from "../../../../../lib/candidates";
+import {
+  isFinalReviewDecision,
+  listCandidates,
+} from "../../../../../lib/candidates";
 import { findOwnedProject } from "../../../../../lib/projects";
 import { requireSession } from "../../../../../lib/session";
 
@@ -35,7 +38,7 @@ export default async function ReviewQueuePage({
     findLatestProjectAnalysis(projectId, session.user.id),
   ]);
   const undecided = candidates.filter(
-    (candidate) => !candidate.latest_decision_action,
+    (candidate) => !isFinalReviewDecision(candidate.latest_decision_action),
   ).length;
 
   return (
@@ -123,8 +126,8 @@ export default async function ReviewQueuePage({
 
       <LimitationNote>
         Every row is a preliminary model proposal, not a finding. Open one to
-        inspect its source evidence and unresolved questions; nothing reaches
-        the materials ledger until you accept or correct it.
+        inspect its source evidence and unresolved questions. Accepted or
+        corrected items appear automatically in the recovery plan.
       </LimitationNote>
     </div>
   );

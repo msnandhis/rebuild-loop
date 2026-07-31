@@ -387,7 +387,7 @@ function formatQuantity(
   const range =
     minimum === maximum
       ? formatNumber(minimum)
-      : `${formatNumber(minimum)}–${formatNumber(maximum)}`;
+      : `${formatNumber(minimum)} to ${formatNumber(maximum)}`;
   return `${range} ${humanize(unit)}`;
 }
 

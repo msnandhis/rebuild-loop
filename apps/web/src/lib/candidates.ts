@@ -9,6 +9,15 @@ import {
 
 export class CandidateNotFoundError extends Error {}
 
+export function isFinalReviewDecision(action: string | null | undefined) {
+  return (
+    action === "CONFIRMED" ||
+    action === "CORRECTED" ||
+    action === "REJECTED" ||
+    action === "SPECIALIST_REVIEW"
+  );
+}
+
 interface CandidateRow {
   candidate_thread_id: string;
   condition: unknown;

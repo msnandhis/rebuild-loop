@@ -29,32 +29,32 @@ export const PROJECT_STATUS: Record<ProjectStatus, ProjectStatusView> = {
   },
   APPROVED: {
     label: "Approved",
-    next: "Print or revisit the pack",
+    next: "Print or revisit the recovery plan",
     tone: "verified",
   },
   DRAFT: {
-    label: "Brief",
+    label: "Overview",
     next: "Add site evidence",
     tone: "attention",
   },
   INTAKE_READY: {
-    label: "Capture",
+    label: "Evidence",
     next: "Start an analysis",
     tone: "evidence",
   },
   INVENTORY_CONFIRMED: {
-    label: "Ledger",
-    next: "Calculate recovery routes",
+    label: "Review",
+    next: "Continue reviewing materials",
     tone: "verified",
   },
   PLAN_DRAFTED: {
-    label: "Pack",
-    next: "Review and approve",
+    label: "Plan",
+    next: "Approve the recovery plan",
     tone: "attention",
   },
   REVIEW_REQUIRED: {
     label: "Review",
-    next: "Decide on proposals",
+    next: "Review material proposals",
     tone: "attention",
   },
 };

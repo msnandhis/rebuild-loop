@@ -14,7 +14,7 @@ export async function GET(
   const correlationId = crypto.randomUUID();
   const user = await getApiUser(request);
   if (!user) {
-    return apiProblem(401, "Sign in to view the recovery pack.", correlationId);
+    return apiProblem(401, "Sign in to view the recovery plan.", correlationId);
   }
   const { projectId } = await context.params;
   if (!isUuid(projectId) || !(await findOwnedProject(projectId, user.id))) {
@@ -36,7 +36,7 @@ export async function GET(
   } catch {
     return apiProblem(
       503,
-      "The recovery pack is temporarily unavailable.",
+      "The recovery plan is temporarily unavailable.",
       correlationId,
     );
   }

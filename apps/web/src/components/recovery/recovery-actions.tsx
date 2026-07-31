@@ -1,12 +1,12 @@
 "use client";
 
-import { Check, FilePlus2, LoaderCircle, Route } from "lucide-react";
+import { Check, LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { primaryControl } from "../workspace/controls";
 
-type RecoveryAction = "approve-plan" | "calculate-pathways" | "create-plan";
+type RecoveryAction = "approve-plan";
 
 const ACTION_COPY: Record<
   RecoveryAction,
@@ -14,18 +14,8 @@ const ACTION_COPY: Record<
 > = {
   "approve-plan": {
     busy: "Approving…",
-    idle: "Approve pack",
+    idle: "Approve recovery plan",
     success: "Approved",
-  },
-  "calculate-pathways": {
-    busy: "Applying rules…",
-    idle: "Calculate routes",
-    success: "Calculated",
-  },
-  "create-plan": {
-    busy: "Drafting…",
-    idle: "Draft pack",
-    success: "Drafted",
   },
 };
 
@@ -42,12 +32,6 @@ export function RecoveryActionButton({
   const [state, setState] = useState<"idle" | "pending" | "success">("idle");
   const [error, setError] = useState("");
   const copy = ACTION_COPY[action];
-  const Icon =
-    action === "calculate-pathways"
-      ? Route
-      : action === "create-plan"
-        ? FilePlus2
-        : Check;
 
   async function run() {
     setError("");
@@ -96,7 +80,7 @@ export function RecoveryActionButton({
             strokeWidth={1.75}
           />
         ) : (
-          <Icon aria-hidden="true" size={15} strokeWidth={1.75} />
+          <Check aria-hidden="true" size={15} strokeWidth={1.75} />
         )}
         {state === "pending"
           ? copy.busy
@@ -112,7 +96,7 @@ export function RecoveryActionButton({
           className="mt-2 max-w-md text-sm leading-5 text-blocked"
           role="alert"
         >
-          {error} Refresh the record and try again.
+          {error}
         </p>
       ) : null}
     </div>
