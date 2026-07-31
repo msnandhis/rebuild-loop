@@ -12,17 +12,34 @@ ReBuild Loop helps demolition and renovation teams review useful building
 materials before they become mixed waste. A user uploads site photos, Gemini
 suggests what may be visible, and a person decides what happens next.
 
-The application keeps the source photo, missing information, follow-up evidence,
-human decisions, safety checks, and final recovery plan together. It supports
-planning; it does not certify safety, prove regulatory compliance, or guarantee
-that a material will be reused or sold.
+The application keeps the source photos, missing information, follow-up
+evidence, human decisions, safety checks, and final recovery plan together.
+The result is a practical handover record that tells a site team what should be
+kept separate and what must be checked before removal.
+
+ReBuild Loop supports planning. It does not certify safety, prove regulatory
+compliance, or guarantee that a material will be reused or sold.
+
+## The product in one sentence
+
+ReBuild Loop turns site photos into a human-reviewed list of recoverable
+materials and an approved plan for handling them before demolition.
+
+## Who it is for
+
+- Demolition and deconstruction teams planning work on an existing building.
+- Architects, contractors, and site managers deciding what should be recovered.
+- Reuse organisations and material specialists who need evidence before
+  accepting an item.
+- Building owners who want a traceable record of recovery decisions.
 
 ## The problem
 
-Before removal, a door, steel member, fixture, or timber section still has a
-location, visible condition, and project context. After destructive removal and
-mixing, it becomes harder to identify the item or decide whether it should have
-been separated for reuse, repair, specialist review, or recycling.
+Before removal, a steel member, timber floor, window, brick wall, fixture, or
+other building element still has a location, visible condition, and project
+context. After destructive removal and mixing, it becomes harder to identify
+the item or decide whether it should have been separated for reuse, repair,
+specialist review, or recycling.
 
 ReBuild Loop moves that decision earlier, while the material and its evidence
 are still available.
@@ -31,24 +48,125 @@ are still available.
 
 ```mermaid
 flowchart LR
-    A["Add site photos"] --> B["Gemini suggests visible materials"]
-    B --> C["A person reviews each suggestion"]
-    C -->|Needs more information| D["Add a close-up"]
-    D --> E["Create a linked revision"]
-    E --> C
-    C -->|Accepted or corrected| F["Apply safety checks"]
-    F --> G["Approve the recovery plan"]
+    A["1. Overview"] --> B["2. Add site evidence"]
+    B --> C["Gemini proposes visible materials"]
+    C --> D["3. A person reviews every proposal"]
+    D -->|More evidence needed| B
+    D -->|Decision recorded| E["Apply fixed safety checks"]
+    E --> F["4. Prepare the recovery plan"]
+    F --> G["Named person approves the plan"]
 ```
 
-1. **Add site photos:** Upload up to six JPEG, PNG, or WebP images.
-2. **Review Gemini's suggestions:** See the source image, visible condition,
-   possible quantity, missing details, and risk flags.
-3. **Make the decision:** Accept, correct, reject, request another photo, or
-   send the item for specialist review.
-4. **Check the route:** Fixed rules outside Gemini block direct reuse when
-   structural, fire, hazard, or specialist information is unresolved.
-5. **Approve the plan:** Keep a named approver, earlier revisions, evidence,
-   decisions, and limitations in one printable record.
+The application has four user-facing stages:
+
+1. **Overview:** Record the project, site, work type, and basic context.
+2. **Evidence:** Upload up to six JPEG, PNG, or WebP images and run an analysis.
+3. **Review:** Inspect every model proposal against its source image. Accept,
+   correct, reject, request more evidence, or require specialist review.
+4. **Recovery plan:** See the confirmed materials, recommended actions,
+   unresolved issues, and ordered removal instructions. A named person can
+   approve and print the current plan.
+
+The older ideas of a separate ledger, routes screen, and recovery pack are
+combined in the recovery plan. Users do not need to repeat the same decisions
+across several pages.
+
+## What is a recovery plan?
+
+A recovery plan brings confirmed materials, recommended actions, unresolved
+issues, and removal instructions into one record. It starts as a draft. After a
+named person approves it, it becomes the final instruction set that can be
+shared with the site team before demolition begins.
+
+It answers six practical questions:
+
+1. What useful materials were found?
+2. How much is likely to be available?
+3. What is known about the visible condition?
+4. What action is recommended for each material?
+5. What must be resolved before removal or reuse?
+6. Who approved the plan, and which evidence and decisions support it?
+
+Each recovery plan contains:
+
+| Part                | What it records                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| Confirmed materials | Lot reference, material type, condition, quantity, and source proposal                           |
+| Recommended action  | Direct reuse, same-site reuse, recycling, controlled residual handling, or specialist review     |
+| Safety issues       | Missing fire, hazard, structural, or specialist information that blocks an unsafe recommendation |
+| Removal sequence    | An ordered list of materials with handling instructions and key risks                            |
+| Revision identity   | A version number and source hash tied to the current material decisions                          |
+| Human approval      | The approver's name and approval time                                                            |
+| Decision history    | Earlier evidence, corrections, review decisions, and plan revisions                              |
+
+Gemini does not choose or approve a final action. Deterministic application
+rules check the human-confirmed materials. Unknown fire, hazard, structural, or
+specialist facts block direct and same-site reuse.
+
+### Example
+
+Suppose site photos show structural steel, hardwood flooring, and glazed
+windows.
+
+- Gemini proposes the visible materials and explains what it can and cannot see.
+- A reviewer corrects the steel quantity, accepts the flooring observation, and
+  requests a closer image of the window frame.
+- ReBuild Loop keeps each decision linked to its evidence.
+- Fixed safety rules send the structural steel for specialist review until its
+  role and condition are confirmed.
+- The recovery plan tells the site team to keep the steel segregated, lift the
+  flooring using reversible methods, protect the recovered pieces, and verify
+  the windows before choosing a destination.
+
+The plan remains preliminary until a named person approves it.
+
+## What happens after the recovery plan?
+
+Approval is the end of the current ReBuild Loop workflow and the beginning of
+physical site work.
+
+```mermaid
+flowchart LR
+    A["Recovery plan approved"] --> B["Brief the site team"]
+    B --> C["Remove materials selectively"]
+    C --> D["Label, protect, and store each lot"]
+    D --> E["Complete specialist checks where required"]
+    E --> F["Handover for reuse, recycling, or controlled disposal"]
+    F --> G["Keep the printed plan as the project record"]
+```
+
+After approval:
+
+1. The site manager shares the plan with the contractor and specialists.
+2. The team uses the removal order and handling notes during deconstruction.
+3. Recovered lots are labelled, kept separate, and protected from damage or
+   contamination.
+4. Engineers, hazardous-material specialists, fire specialists, or reuse
+   organisations complete any checks required by the plan.
+5. Each lot is handed over for direct reuse, same-site reuse, recycling, or
+   controlled residual handling.
+6. The approved print view becomes part of the project handover record.
+
+The physical removal, transport, laboratory testing, engineering
+certification, regulatory submission, buyer matching, sale, and final reuse
+confirmation happen outside the current application. Future versions could add
+chain-of-custody scanning, contractor task completion, recipient handover, and
+verified outcome reporting.
+
+## Evidence, storage, and traceability
+
+- Uploaded images are stored in private S3-compatible object storage, not in
+  the public web directory or directly inside PostgreSQL.
+- PostgreSQL stores project ownership, upload state, analysis records, model
+  proposals, human decisions, confirmed material revisions, recommended
+  actions, recovery plans, and audit events.
+- Evidence links use short-lived signed URLs when an authorised user needs to
+  view a private image.
+- Corrections create new revisions instead of silently replacing earlier
+  records.
+- Recovery plans use a source hash so an old plan cannot remain current after
+  its supporting material decisions change.
+- Every consequential model proposal requires a human decision.
 
 ## Who does what
 
@@ -101,8 +219,8 @@ APIs. See [`apps/adk`](apps/adk) for the agent, decision gate, and tests.
 - Human accept, correct, reject, request-evidence, and specialist-review
   decisions.
 - Follow-up image analysis with linked, unchanged earlier revisions.
-- Material and mineral-rubble ledgers.
-- Conservative recovery-route checks outside the model.
+- A combined recovery plan with confirmed materials and recommended actions.
+- Conservative safety checks outside the model.
 - Versioned recovery plans with named approval, print view, and audit history.
 - Local Docker environment and production deployment through Coolify.
 
